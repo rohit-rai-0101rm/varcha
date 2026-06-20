@@ -6,6 +6,7 @@ import { fetchProductBySlug } from '@/lib/api';
 import StyleMotif from '@/components/StyleMotif';
 import MarketplaceButton from '@/components/MarketplaceButton';
 import WishlistButton from '@/components/WishlistButton';
+import AddToCartButton from '@/components/AddToCartButton';
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -142,9 +143,16 @@ export default async function ProductPage({ params }: Props) {
             <div className="mt-2 flex flex-col gap-2">
               {product.channel === 'website-exclusive' ? (
                 <div className="flex gap-2">
-                  <button className="flex-1 rounded-btn bg-wine px-6 py-3 font-body text-sm font-medium text-surface">
-                    Add to Cart
-                  </button>
+                  <div className="flex-1">
+                    <AddToCartButton
+                      productId={product._id}
+                      name={product.name}
+                      price={product.price}
+                      image={mainImage?.url ?? ''}
+                      slug={product.slug}
+                      stockQty={product.stockQty ?? 0}
+                    />
+                  </div>
                   <WishlistButton productId={product._id} />
                 </div>
               ) : (
