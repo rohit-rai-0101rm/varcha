@@ -4,7 +4,6 @@ import './globals.css';
 
 const fraunces = Fraunces({
   subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
   axes: ['opsz'],
   variable: '--font-fraunces',
   display: 'swap',

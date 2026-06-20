@@ -1,3 +1,5 @@
+import ThemeToggle from '@/components/ThemeToggle';
+
 export default function Home() {
   return (
     <main className="flex min-h-screen items-center justify-center bg-bg">
@@ -6,6 +8,7 @@ export default function Home() {
         <p className="mt-3 font-body text-lg text-ink-soft">
           Curated artificial jewelry — coming soon
         </p>
+        <ThemeToggle />
       </div>
     </main>
   );
