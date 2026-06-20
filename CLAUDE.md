@@ -79,11 +79,63 @@ first, not into a silent doc edit.
 
 ## Commands
 
-(Run `/init` after checkpoint 0 to fill this in from the actual codebase
-— build commands, test commands, lint commands. Don't hand-write these
-before there's code to scan.)
+All commands run from the **repo root** unless noted.
+
+```bash
+# Install / add deps
+yarn install                        # install everything (run once after clone)
+yarn workspace varcha-backend add <pkg>     # add a backend dep
+yarn workspace varcha-frontend add <pkg>    # add a frontend dep
+
+# Dev servers
+yarn dev:backend                    # Express on http://localhost:4000  (nodemon + ts-node)
+yarn dev:frontend                   # Next.js on http://localhost:3000
+
+# Build
+yarn build:backend                  # tsc → backend/dist/
+yarn build:frontend                 # next build
+yarn workspace varcha-shared build  # tsc → shared/dist/  (needed before backend build)
+
+# Lint / format
+yarn lint                           # eslint across all workspaces
+yarn format                         # prettier --write .
+yarn workspace varcha-backend lint  # backend only
+```
+
+No test suite yet — add the command here when tests are introduced.
+
+**Health check:** `GET http://localhost:4000/api/health` → `{ status: "ok", db: "connected" }`
+
+## Architecture
+
+```
+varcha/
+├── shared/src/index.ts   # All domain TS types — User, Product, Order, Style, etc.
+│                         # Both backend and frontend import from "varcha-shared"
+├── backend/src/
+│   ├── index.ts          # Express entry: loads .env from repo root, mounts routers
+│   ├── db.ts             # Mongoose connect + getDbStatus(); .env must be at repo root
+│   └── routes/           # One file per resource group (health.ts is the only one now)
+└── frontend/
+    ├── app/              # Next.js App Router — layouts and pages go here
+    │   ├── layout.tsx    # Root layout: loads fonts, sets data-theme="light" on <html>
+    │   └── globals.css   # CSS variables for all design tokens (light + dark)
+    ├── components/       # Shared UI components — client components marked 'use client'
+    └── tailwind.config.ts  # Token aliases: bg-wine, text-ink-soft, font-display, etc.
+```
+
+**Dotenv quirk:** `backend/src/index.ts` loads `.env` via `path.resolve(__dirname, '../../.env')` because nodemon runs from `backend/` but the `.env` lives at the repo root. Don't move `.env` into `backend/`.
+
+**Theme system:** `data-theme="light|dark"` on `<html>` drives all color switches via CSS variables in `globals.css`. Tailwind color utilities (`bg-wine`, `text-ink-soft`, etc.) are aliases to those CSS variables — components stay theme-neutral automatically.
+
+**Adding a new API route:** create `backend/src/routes/<resource>.ts`, export a Router, mount it in `backend/src/index.ts` under `/api`.
+
+**Adding a new page:** create `frontend/app/<route>/page.tsx`. Server component by default; add `'use client'` only when the component needs browser APIs or React state.
 
 ## Conventions
 
-(Same — let `/init` discover indentation, file structure, and naming
-from the real code, then refine here if it gets something wrong.)
+- 2-space indent, single quotes, trailing commas — enforced by `.prettierrc`
+- Backend: CommonJS (`module: "CommonJS"` in tsconfig), so `require`-style interop works
+- Frontend: `moduleResolution: "bundler"` — use `@/` alias for imports within `frontend/`
+- Shared types use plain `string` for ObjectId refs (not `mongoose.Types.ObjectId`) so they're usable in the frontend without pulling in Mongoose
+- The shared TS interface is named `EngagementEvent` (not `Event`) to avoid colliding with the DOM `Event` type. The Mongoose model will still be named `Event` → `events` collection, matching SRS §6.7
