@@ -1,5 +1,5 @@
 # Software Requirements Specification — Varcha
-**Version 7.0 — Per-Customer Engagement View** · June 19, 2026
+**Version 7.1 — Marketplace Redirect Event Type** · June 20, 2026
 
 ## Revision History
 | Version | Change |
@@ -12,6 +12,7 @@
 | 5.0 | Phone required at signup. Added marketing-consent checkbox |
 | 6.0 | Replaced fixed `finish` enum with admin-managed Styles collection. Added dropdown-only data-integrity rule (FR-30) |
 | 7.0 | Added FR-31: per-customer time-spent breakdown for sales follow-up |
+| 7.1 | §6.7 Events: renamed `amazon_redirect` type to `marketplace_redirect`; added `platform` field to cover both Amazon and Flipkart per FR-7 |
 
 ---
 
@@ -225,9 +226,10 @@ Defined in the companion Business Plan document. This SRS assumes that positioni
 | _id | ObjectId | Primary key |
 | sessionId | String (ref) | References Sessions — primary tracking key |
 | userId | ObjectId (ref) | Nullable, only if logged in |
-| type | String (enum) | pageview / click / time_spent / amazon_redirect / checkout_complete |
+| type | String (enum) | pageview / click / time_spent / marketplace_redirect / checkout_complete |
 | productId | ObjectId (ref) | Nullable |
 | categoryId | ObjectId (ref) | Nullable |
+| platform | String | Nullable; set on marketplace_redirect events — "amazon" or "flipkart" |
 | durationMs | Number | Used for time_spent events |
 | timestamp | Date | Auto-set |
 

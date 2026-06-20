@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { fetchCategories } from '@/lib/api';
 import ThemeToggle from './ThemeToggle';
 import MobileMenu from './MobileMenu';
+import AuthNav from './AuthNav';
 
 export default async function Navbar() {
   const categories = await fetchCategories();
@@ -59,6 +60,7 @@ export default async function Navbar() {
               </svg>
               Search
             </Link>
+            <AuthNav />
             <ThemeToggle />
             <MobileMenu categories={categories} />
           </div>
