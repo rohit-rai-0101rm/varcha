@@ -44,7 +44,20 @@
       "WebFetch(domain:colorlib.com)",
       "WebFetch(domain:saikai.io)",
       "WebFetch(domain:mejuri.com)",
-      "WebFetch(domain:www.kalyanjewellers.net)"
+      "WebFetch(domain:www.kalyanjewellers.net)",
+      "Bash(curl -s \"http://localhost:4000/api/products?category=necklaces&style=kundan\")",
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(f'{len\\(d\\)} results'\\); [print\\(' -', p['name']\\) for p in d]\")",
+      "Bash(curl -s \"http://localhost:4000/api/products?category=necklaces&minPrice=2000&maxPrice=3000\")",
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(f'{len\\(d\\)} results \\(price 2000-3000\\)'\\); [print\\(' -', p['name'], p['price']\\) for p in d]\")",
+      "Bash(curl -s \"http://localhost:4000/api/products?search=bead\")",
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(f'{len\\(d\\)} search results for bead'\\); [print\\(' -', p['name']\\) for p in d]\")",
+      "Bash(curl -s \"http://localhost:4000/api/products/meenakari-choker\")",
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\('PDP slug check:', d['slug'], '==', 'meenakari-choker'\\)\")",
+      "Bash(curl -s \"http://localhost:4000/api/products?occasion=bridal\")",
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(f'{len\\(d\\)} results for occasion=bridal'\\); [print\\(' -', p['name'], p['occasion']\\) for p in d]\")",
+      "Bash(curl -s \"http://localhost:4000/api/products?gender=women\")",
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(f'{len\\(d\\)} results for gender=women'\\)\")",
+      "Bash(curl -s \"http://localhost:4000/api/products/nonexistent-slug\" -o /dev/null -w \"%{http_code}\")"
     ],
     "additionalDirectories": [
       "/Users/techntactix/Documents/Varcha/shared"
