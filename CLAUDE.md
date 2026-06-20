@@ -81,6 +81,10 @@ just a doc edit) — stop and flag it instead of quietly updating the SRS
 to match. That kind of change goes back to the human for a decision
 first, not into a silent doc edit.
 
+## Git workflow
+
+Do **not** push to GitHub — the user handles all pushes and PRs manually. Create commits locally only.
+
 ## Commands
 
 All commands run from the **repo root** unless noted.
@@ -133,6 +137,8 @@ varcha/
     │   └── globals.css   # CSS variables for all design tokens (light + dark)
     ├── components/       # Shared UI components — client components marked 'use client'
     ├── context/AuthContext.tsx  # Auth state (user, login, logout, refreshUser) — read via useAuth()
+    ├── context/CartContext.tsx  # localStorage-persisted cart (key: varcha_cart) — read via useCart()
+    │                            # Works for guests, no backend needed. addItem caps at stockQty.
     ├── components/Providers.tsx # 'use client' wrapper; layout.tsx is a server component so it
     │                            # can't use context directly — Providers bridges this
     ├── middleware.ts     # Edge runtime; sets varcha_session UUID cookie on first visit
@@ -166,6 +172,12 @@ varcha/
 **Session model quirk:** `Session` uses a string `_id` (the UUID). The schema is defined without a TypeScript interface extending `Document` — doing so conflicts because `Document._id` is typed as `ObjectId`. Schema options include `{ _id: false }` so Mongoose uses our string `_id` field as-is.
 
 **Session linking on login:** `authService.login()` calls `Session.updateMany` + `Event.updateMany` to retroactively attach `userId` to any guest documents that share the same `sessionId`. This only runs if a `sessionId` header was provided at login time.
+
+**Razorpay checkout flow:** `POST /api/checkout/create-order` (validates stock, creates Razorpay order in paise) → frontend opens `window.Razorpay` modal → on success `POST /api/checkout/verify-payment` (HMAC-SHA256 sig check → Mongoose transaction: atomic stock decrement + Order + Payment insert → email). Use `optionalAuth` on checkout routes (guests can pay); use `requireAuth` on `/api/orders`.
+
+**Razorpay webhook raw body:** the webhook route must be mounted with `express.raw({ type: 'application/json' })` *before* `app.use(express.json())` in `index.ts` — parsed JSON breaks HMAC verification. See the mount order in `backend/src/index.ts`.
+
+**Payment idempotency:** `Payment` model has `gatewayTransactionId: { unique: true }`. `verifyAndFulfill` checks for an existing Payment before opening a transaction — safe to retry the verify endpoint without creating duplicate orders.
 
 ## Conventions
 
