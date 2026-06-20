@@ -1,3 +1,7 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
 # Varcha — Project Memory
 
 @docs/SRS.md
@@ -91,6 +95,9 @@ yarn workspace varcha-frontend add <pkg>    # add a frontend dep
 yarn dev:backend                    # Express on http://localhost:4000  (nodemon + ts-node)
 yarn dev:frontend                   # Next.js on http://localhost:3000
 
+# Seed database (run backend server first, or set MONGODB_URI in .env)
+yarn workspace varcha-backend exec ts-node src/seed.ts
+
 # Build
 yarn build:backend                  # tsc → backend/dist/
 yarn build:frontend                 # next build
@@ -113,14 +120,19 @@ varcha/
 ├── shared/src/index.ts   # All domain TS types — User, Product, Order, Style, etc.
 │                         # Both backend and frontend import from "varcha-shared"
 ├── backend/src/
-│   ├── index.ts          # Express entry: loads .env from repo root, mounts routers
+│   ├── index.ts          # Express entry: loads .env from repo root, mounts all routers
 │   ├── db.ts             # Mongoose connect + getDbStatus(); .env must be at repo root
-│   └── routes/           # One file per resource group (health.ts is the only one now)
+│   ├── routes/           # One Router file per resource — mounts controllers
+│   ├── controllers/      # Request/response handling; calls service layer
+│   ├── services/         # Business logic + Mongoose queries (populate here, not in routes)
+│   ├── models/           # Mongoose schemas + models
+│   └── seed.ts           # One-shot seed script; clears and repopulates all collections
 └── frontend/
     ├── app/              # Next.js App Router — layouts and pages go here
     │   ├── layout.tsx    # Root layout: loads fonts, sets data-theme="light" on <html>
     │   └── globals.css   # CSS variables for all design tokens (light + dark)
     ├── components/       # Shared UI components — client components marked 'use client'
+    ├── lib/api.ts        # All fetch calls to the backend; returns [] or null on error, never throws
     └── tailwind.config.ts  # Token aliases: bg-wine, text-ink-soft, font-display, etc.
 ```
 
@@ -128,9 +140,15 @@ varcha/
 
 **Theme system:** `data-theme="light|dark"` on `<html>` drives all color switches via CSS variables in `globals.css`. Tailwind color utilities (`bg-wine`, `text-ink-soft`, etc.) are aliases to those CSS variables — components stay theme-neutral automatically.
 
-**Adding a new API route:** create `backend/src/routes/<resource>.ts`, export a Router, mount it in `backend/src/index.ts` under `/api`.
+**Adding a new API route:** create `backend/src/routes/<resource>.ts`, export a Router, mount it in `backend/src/index.ts` under `/api`. Business logic goes in `services/`, thin controller in `controllers/`.
 
 **Adding a new page:** create `frontend/app/<route>/page.tsx`. Server component by default; add `'use client'` only when the component needs browser APIs or React state.
+
+**Next.js 15 async page props:** both `params` and `searchParams` are `Promise<…>` — always `await` them before use. Example: `const { slug } = await params`.
+
+**`useSearchParams()` requires `<Suspense>`:** any client component calling `useSearchParams()` must be wrapped in `<Suspense>` at its parent page, otherwise Next.js throws at build time. See how `FilterPanel` is wrapped in the category PLP.
+
+**Fetch caching in `lib/api.ts`:** categories and styles use `revalidate: 60`; products use `revalidate: 30`. Match these values (or use `cache: 'no-store'`) when adding new fetch calls depending on how stale the data can be.
 
 ## Conventions
 
