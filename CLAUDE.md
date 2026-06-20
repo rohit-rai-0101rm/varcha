@@ -7,8 +7,13 @@
 - Frontend: Next.js (App Router), TypeScript, Tailwind CSS
 - Backend: Node.js + Express, TypeScript
 - Database: MongoDB via Mongoose
-- Repo: single monorepo — `frontend/`, `backend/`, optional `shared/` for
-  TS types used by both halves. Not two separate repos.
+- Repo: single monorepo, set up as a **Yarn Workspace** — one root
+  package.json with `"workspaces": ["frontend", "backend", "shared"]`,
+  one yarn.lock at the root, one `yarn install` run from the root rather
+  than three separate installs. This is what makes `shared/` actually
+  usable — both halves import shared TS types as a real workspace
+  reference, not a relative-path hack. Not two separate repos, and not
+  three independent unrelated folders either.
 
 ## Package manager
 - Yarn only, not npm. Every install/add/remove command uses `yarn`, not

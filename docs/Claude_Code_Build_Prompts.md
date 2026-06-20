@@ -9,12 +9,16 @@ How to use this: paste each checkpoint's prompt into Claude Code **in order**. D
 ## Checkpoint 0 — Project skeleton
 
 ```
-Set up a new full-stack project for an e-commerce platform called Varcha.
+Set up new full-stack project for an e-commerce platform called Varcha,
+structured as a Yarn Workspace monorepo:
 
-Structure:
+- Root package.json with "workspaces": ["frontend", "backend", "shared"]
 - /frontend — Next.js (App Router), TypeScript, Tailwind CSS
 - /backend — Node.js + Express, TypeScript
+- /shared — TS types/interfaces used by both halves (Product, Order, etc.)
 - MongoDB via Mongoose, connection string from an .env file (never hardcoded)
+- One yarn.lock at the root — run `yarn install` once from root, not
+  separate installs inside each workspace folder
 
 Read docs/SRS.md first for full context — it's an artificial jewelry
 e-commerce site with two purchase flows (marketplace redirect for everyday
