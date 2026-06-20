@@ -12,11 +12,15 @@ import productsRouter from './routes/products';
 import authRouter from './routes/auth';
 import eventsRouter from './routes/events';
 import wishlistRouter from './routes/wishlist';
+import checkoutRouter from './routes/checkout';
+import ordersRouter from './routes/orders';
 
 const app = express();
 const PORT = process.env.PORT ?? 4000;
 
 app.use(cors({ origin: true, credentials: true }));
+// Raw body for Razorpay webhook HMAC — must come before express.json()
+app.use('/api/checkout/webhook', express.raw({ type: 'application/json' }));
 app.use(express.json());
 app.use(attachSession);
 
@@ -27,6 +31,8 @@ app.use('/api/products', productsRouter);
 app.use('/api/auth', authRouter);
 app.use('/api/events', eventsRouter);
 app.use('/api/wishlist', wishlistRouter);
+app.use('/api/checkout', checkoutRouter);
+app.use('/api/orders', ordersRouter);
 
 connectDb().then(() => {
   app.listen(PORT, () => {

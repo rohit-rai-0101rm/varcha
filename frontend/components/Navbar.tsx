@@ -3,6 +3,7 @@ import { fetchCategories } from '@/lib/api';
 import ThemeToggle from './ThemeToggle';
 import MobileMenu from './MobileMenu';
 import AuthNav from './AuthNav';
+import CartIcon from './CartIcon';
 
 export default async function Navbar() {
   const categories = await fetchCategories();
@@ -60,6 +61,7 @@ export default async function Navbar() {
               </svg>
               Search
             </Link>
+            <CartIcon />
             <AuthNav />
             <ThemeToggle />
             <MobileMenu categories={categories} />

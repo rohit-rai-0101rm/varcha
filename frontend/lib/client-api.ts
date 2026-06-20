@@ -124,3 +124,70 @@ export async function apiGetWishlist(): Promise<unknown[]> {
   if (!res.ok) return [];
   return res.json();
 }
+
+// ── Checkout ─────────────────────────────────────────────────────────────────
+
+export interface CheckoutItem {
+  productId: string;
+  qty: number;
+}
+
+export interface ShippingAddress {
+  line1: string;
+  line2?: string;
+  city: string;
+  state: string;
+  pincode: string;
+}
+
+export interface CheckoutContact {
+  name: string;
+  phone: string;
+  email: string;
+  marketingConsent?: boolean;
+}
+
+export async function apiCreateRazorpayOrder(
+  items: CheckoutItem[],
+): Promise<{ razorpayOrderId: string; amount: number; currency: string }> {
+  const res = await fetch(`${API}/api/checkout/create-order`, {
+    method: 'POST',
+    headers: authHeaders(),
+    body: JSON.stringify({ items }),
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message ?? 'Failed to create order');
+  return data;
+}
+
+export async function apiVerifyPayment(body: {
+  razorpayOrderId: string;
+  razorpayPaymentId: string;
+  razorpaySignature: string;
+  items: CheckoutItem[];
+  shippingAddress: ShippingAddress;
+  contact: CheckoutContact;
+}): Promise<{ orderId: string }> {
+  const res = await fetch(`${API}/api/checkout/verify-payment`, {
+    method: 'POST',
+    headers: authHeaders(),
+    body: JSON.stringify(body),
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message ?? 'Payment verification failed');
+  return data;
+}
+
+// ── Orders ────────────────────────────────────────────────────────────────────
+
+export async function apiGetMyOrders(): Promise<unknown[]> {
+  const res = await fetch(`${API}/api/orders`, { headers: authHeaders() });
+  if (!res.ok) return [];
+  return res.json();
+}
+
+export async function apiGetOrderById(id: string): Promise<unknown | null> {
+  const res = await fetch(`${API}/api/orders/${id}`, { headers: authHeaders() });
+  if (!res.ok) return null;
+  return res.json();
+}
