@@ -132,7 +132,13 @@ varcha/
     │   ├── layout.tsx    # Root layout: loads fonts, sets data-theme="light" on <html>
     │   └── globals.css   # CSS variables for all design tokens (light + dark)
     ├── components/       # Shared UI components — client components marked 'use client'
-    ├── lib/api.ts        # All fetch calls to the backend; returns [] or null on error, never throws
+    ├── context/AuthContext.tsx  # Auth state (user, login, logout, refreshUser) — read via useAuth()
+    ├── components/Providers.tsx # 'use client' wrapper; layout.tsx is a server component so it
+    │                            # can't use context directly — Providers bridges this
+    ├── middleware.ts     # Edge runtime; sets varcha_session UUID cookie on first visit
+    ├── lib/api.ts        # Server-side fetch only — no auth headers; returns [] or null, never throws
+    └── lib/client-api.ts # Browser fetch — attaches JWT (Authorization) + sessionId (X-Session-Id);
+    │                     # use this in 'use client' components, never in server components
     └── tailwind.config.ts  # Token aliases: bg-wine, text-ink-soft, font-display, etc.
 ```
 
@@ -149,6 +155,17 @@ varcha/
 **`useSearchParams()` requires `<Suspense>`:** any client component calling `useSearchParams()` must be wrapped in `<Suspense>` at its parent page, otherwise Next.js throws at build time. See how `FilterPanel` is wrapped in the category PLP.
 
 **Fetch caching in `lib/api.ts`:** categories and styles use `revalidate: 60`; products use `revalidate: 30`. Match these values (or use `cache: 'no-store'`) when adding new fetch calls depending on how stale the data can be.
+
+**Auth pattern:** JWT is stored in `localStorage` under key `varcha_token` and passed as `Authorization: Bearer <token>`. Session ID is a UUID cookie (`varcha_session`, readable by JS — `httpOnly: false`) but sent to the backend as `X-Session-Id` header, not as a cookie — cross-origin requests (port 3000 → 4000) don't auto-send cookies. `authHeaders()` in `client-api.ts` builds both headers together.
+
+**Backend auth middleware** (`backend/src/middleware/auth.ts`):
+- `attachSession` — reads `X-Session-Id` header → `req.sessionId`; apply globally in `index.ts`
+- `requireAuth` — verifies Bearer JWT, returns 401 if missing/invalid; use on protected routes
+- `optionalAuth` — same verification but never returns 401; use on routes anonymous users can also hit (e.g. events endpoint)
+
+**Session model quirk:** `Session` uses a string `_id` (the UUID). The schema is defined without a TypeScript interface extending `Document` — doing so conflicts because `Document._id` is typed as `ObjectId`. Schema options include `{ _id: false }` so Mongoose uses our string `_id` field as-is.
+
+**Session linking on login:** `authService.login()` calls `Session.updateMany` + `Event.updateMany` to retroactively attach `userId` to any guest documents that share the same `sessionId`. This only runs if a `sessionId` header was provided at login time.
 
 ## Conventions
 
