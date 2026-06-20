@@ -9,41 +9,41 @@ How to use this: paste each checkpoint's prompt into Claude Code **in order**. D
 ## Checkpoint 0 — Project skeleton
 
 ```
-Set up new full-stack project for an e-commerce platform called Varcha,
-structured as a Yarn Workspace monorepo:
+    Set up new full-stack project for an e-commerce platform called Varcha,
+    structured as a Yarn Workspace monorepo:
 
-- Root package.json with "workspaces": ["frontend", "backend", "shared"]
-- /frontend — Next.js (App Router), TypeScript, Tailwind CSS
-- /backend — Node.js + Express, TypeScript
-- /shared — TS types/interfaces used by both halves (Product, Order, etc.)
-- MongoDB via Mongoose, connection string from an .env file (never hardcoded)
-- One yarn.lock at the root — run `yarn install` once from root, not
-  separate installs inside each workspace folder
+    - Root package.json with "workspaces": ["frontend", "backend", "shared"]
+    - /frontend — Next.js (App Router), TypeScript, Tailwind CSS
+    - /backend — Node.js + Express, TypeScript
+    - /shared — TS types/interfaces used by both halves (Product, Order, etc.)
+    - MongoDB via Mongoose, connection string from an .env file (never hardcoded)
+    - One yarn.lock at the root — run `yarn install` once from root, not
+    separate installs inside each workspace folder
 
-Read docs/SRS.md first for full context — it's an artificial jewelry
-e-commerce site with two purchase flows (marketplace redirect for everyday
-items, own checkout for an exclusive line) and an admin panel. Don't build
-any features yet, just the skeleton.
+    Read docs/SRS.md first for full context — it's an artificial jewelry
+    e-commerce site with two purchase flows (marketplace redirect for everyday
+    items, own checkout for an exclusive line) and an admin panel. Don't build
+    any features yet, just the skeleton.
 
-Also read docs/DESIGN_SYSTEM.md and set up the design tokens now, even
-though there's no UI yet — define the CSS variables (light + dark, via a
-data-theme attribute) in the Tailwind config / global CSS, and import the
-three fonts (Fraunces, Inter, Special Elite). Every component built in
-later checkpoints should pull from these tokens, not invent new ones.
+    Also read docs/DESIGN_SYSTEM.md and set up the design tokens now, even
+    though there's no UI yet — define the CSS variables (light + dark, via a
+    data-theme attribute) in the Tailwind config / global CSS, and import the
+    three fonts (Fraunces, Inter, Special Elite). Every component built in
+    later checkpoints should pull from these tokens, not invent new ones.
 
-Use Yarn for every install, not npm — when scaffolding anything (e.g.
-create-next-app), make sure it doesn't default to generating a
-package-lock.json. Commit yarn.lock once it exists.
+    Use Yarn for every install, not npm — when scaffolding anything (e.g.
+    create-next-app), make sure it doesn't default to generating a
+    package-lock.json. Commit yarn.lock once it exists.
 
-Set up:
-- TypeScript configs for both frontend and backend, strict mode on
-- ESLint + Prettier for both
-- A basic Express server with one health-check route: GET /api/health
-  returning { status: "ok", db: "connected" | "disconnected" }
-- Mongoose connection with proper error handling and reconnection logic
-- .env.example listing every env var needed so far (MONGODB_URI, PORT)
-- A root README explaining how to run both halves locally
-```
+    Set up:
+    - TypeScript configs for both frontend and backend, strict mode on
+    - ESLint + Prettier for both
+    - A basic Express server with one health-check route: GET /api/health
+    returning { status: "ok", db: "connected" | "disconnected" }
+    - Mongoose connection with proper error handling and reconnection logic
+    - .env.example listing every env var needed so far (MONGODB_URI, PORT)
+    - A root README explaining how to run both halves locally
+    ```
 
 **Test gate:** run both servers locally. Hit `/api/health`, confirm it returns `db: "connected"`. Confirm the Next.js app renders a blank page with no console errors, light/dark toggle (even a placeholder one) actually swaps the CSS variables. Don't move on until both are true.
 

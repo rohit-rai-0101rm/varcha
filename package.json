@@ -1,0 +1,17 @@
+{
+  "name": "varcha",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": ["frontend", "backend", "shared"],
+  "scripts": {
+    "dev:frontend": "yarn workspace varcha-frontend dev",
+    "dev:backend": "yarn workspace varcha-backend dev",
+    "build:frontend": "yarn workspace varcha-frontend build",
+    "build:backend": "yarn workspace varcha-backend build",
+    "lint": "yarn workspaces run lint",
+    "format": "prettier --write ."
+  },
+  "devDependencies": {
+    "prettier": "^3.3.0"
+  }
+}

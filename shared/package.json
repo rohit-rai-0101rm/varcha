@@ -1,0 +1,14 @@
+{
+  "name": "varcha-shared",
+  "version": "1.0.0",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "lint": "echo 'no linter for shared (types only)'"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.0"
+  }
+}
