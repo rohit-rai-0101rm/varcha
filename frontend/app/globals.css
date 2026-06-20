@@ -33,7 +33,23 @@
 }
 
 @layer base {
+  *,
+  *::before,
+  *::after {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
   body {
     @apply bg-bg text-ink font-body;
+  }
+
+  ::selection {
+    background-color: var(--wine);
+    color: var(--surface);
   }
 }
