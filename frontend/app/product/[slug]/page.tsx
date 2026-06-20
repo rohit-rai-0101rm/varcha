@@ -1,11 +1,24 @@
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
+import type { Metadata } from 'next';
 import { fetchProductBySlug } from '@/lib/api';
 import StyleMotif from '@/components/StyleMotif';
+import MarketplaceButton from '@/components/MarketplaceButton';
+import WishlistButton from '@/components/WishlistButton';
 
 interface Props {
   params: Promise<{ slug: string }>;
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug } = await params;
+  const product = await fetchProductBySlug(slug);
+  if (!product) return { title: 'Product not found — Varcha' };
+  return {
+    title: `${product.name} — Varcha`,
+    description: product.description ?? `Shop ${product.name} on Varcha.`,
+  };
 }
 
 export default async function ProductPage({ params }: Props) {
@@ -128,21 +141,24 @@ export default async function ProductPage({ params }: Props) {
             {/* CTA */}
             <div className="mt-2 flex flex-col gap-2">
               {product.channel === 'website-exclusive' ? (
-                <button className="rounded-btn bg-wine px-6 py-3 font-body text-sm font-medium text-surface">
-                  Add to Cart
-                </button>
+                <div className="flex gap-2">
+                  <button className="flex-1 rounded-btn bg-wine px-6 py-3 font-body text-sm font-medium text-surface">
+                    Add to Cart
+                  </button>
+                  <WishlistButton productId={product._id} />
+                </div>
               ) : (
-                product.marketplaceLinks?.map((link) => (
-                  <a
-                    key={link.platform}
-                    href={link.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="rounded-btn border border-gold px-6 py-3 text-center font-body text-sm font-medium capitalize text-gold"
-                  >
-                    Buy on {link.platform}
-                  </a>
-                ))
+                <>
+                  {product.marketplaceLinks?.map((link) => (
+                    <MarketplaceButton
+                      key={link.platform}
+                      platform={link.platform}
+                      url={link.url}
+                      productId={product._id}
+                    />
+                  ))}
+                  <WishlistButton productId={product._id} />
+                </>
               )}
             </div>
 
