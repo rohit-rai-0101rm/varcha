@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir -p /Users/techntactix/Documents/Varcha/shared/src /Users/techntactix/Documents/Varcha/backend/src/routes /Users/techntactix/Documents/Varcha/frontend/app)",
+      "Bash(yarn install *)",
+      "Bash(yarn workspace *)",
+      "Bash(yarn tsc *)",
+      "Bash(git -C /Users/techntactix/Documents/Varcha status)",
+      "Bash(git -C /Users/techntactix/Documents/Varcha log --oneline -3)",
+      "Bash(git -C /Users/techntactix/Documents/Varcha add package.json tsconfig.base.json .prettierrc .env.example README.md yarn.lock shared/ backend/ frontend/)",
+      "Bash(git -C /Users/techntactix/Documents/Varcha commit -m ' *)",
+      "Bash(git -C /Users/techntactix/Documents/Varcha add frontend/components/ThemeToggle.tsx frontend/app/page.tsx frontend/app/layout.tsx frontend/next-env.d.ts)"
+    ],
+    "additionalDirectories": [
+      "/Users/techntactix/Documents/Varcha/shared"
+    ]
+  }
+}
