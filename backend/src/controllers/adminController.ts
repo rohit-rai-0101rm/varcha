@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import * as svc from '../services/adminService';
+import * as analytics from '../services/analyticsService';
 
 function err(res: Response, e: any) {
   res.status(e?.status ?? 500).json({ message: e?.message ?? 'Server error' });
@@ -168,4 +169,28 @@ export async function getSettings(_req: Request, res: Response) {
 
 export async function updateSettings(req: Request, res: Response) {
   try { res.json(await svc.updateSettings(req.body)); } catch (e) { err(res, e); }
+}
+
+// ── Analytics ─────────────────────────────────────────────────────────────────
+
+export async function getOverview(_req: Request, res: Response) {
+  try { res.json(await analytics.getOverview()); } catch (e) { err(res, e); }
+}
+
+export async function getTopSessions(_req: Request, res: Response) {
+  try { res.json(await analytics.getTopEngagedSessions()); } catch (e) { err(res, e); }
+}
+
+// ── Customers ─────────────────────────────────────────────────────────────────
+
+export async function listCustomers(_req: Request, res: Response) {
+  try { res.json(await analytics.listCustomers()); } catch (e) { err(res, e); }
+}
+
+export async function getCustomerDetail(req: Request, res: Response) {
+  try {
+    const data = await analytics.getCustomerDetail(req.params.userId);
+    if (!data.user) { res.status(404).json({ message: 'Not found' }); return; }
+    res.json(data);
+  } catch (e) { err(res, e); }
 }

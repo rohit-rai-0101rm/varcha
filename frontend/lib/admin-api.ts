@@ -205,6 +205,34 @@ export async function adminApiUpdateOrderStatus(id: string, orderStatus: string)
   return json;
 }
 
+// ── Analytics ─────────────────────────────────────────────────────────────────
+
+export async function adminApiGetAnalytics() {
+  const res = await fetch(`${API}/api/admin/analytics`, { headers: adminHeaders() });
+  if (!res.ok) return null;
+  return res.json();
+}
+
+export async function adminApiGetTopSessions() {
+  const res = await fetch(`${API}/api/admin/analytics/sessions`, { headers: adminHeaders() });
+  if (!res.ok) return [];
+  return res.json();
+}
+
+// ── Customers ─────────────────────────────────────────────────────────────────
+
+export async function adminApiListCustomers() {
+  const res = await fetch(`${API}/api/admin/customers`, { headers: adminHeaders() });
+  if (!res.ok) return [];
+  return res.json();
+}
+
+export async function adminApiGetCustomerDetail(userId: string) {
+  const res = await fetch(`${API}/api/admin/customers/${userId}`, { headers: adminHeaders() });
+  if (!res.ok) return null;
+  return res.json();
+}
+
 // ── Settings ──────────────────────────────────────────────────────────────────
 
 export async function adminApiGetSettings() {

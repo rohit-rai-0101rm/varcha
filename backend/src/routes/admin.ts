@@ -42,4 +42,12 @@ router.patch('/orders/:id/status', requireAdmin, ctrl.updateOrderStatus);
 router.get('/settings', requireAdmin, ctrl.getSettings);
 router.put('/settings', requireAdmin, ctrl.updateSettings);
 
+// Analytics
+router.get('/analytics', requireAdmin, ctrl.getOverview);
+router.get('/analytics/sessions', requireAdmin, ctrl.getTopSessions);
+
+// Customers
+router.get('/customers', requireAdmin, ctrl.listCustomers);
+router.get('/customers/:userId', requireAdmin, ctrl.getCustomerDetail);
+
 export default router;
