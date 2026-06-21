@@ -4,6 +4,7 @@ import { fetchCategoryBySlug, fetchProducts, fetchStyles } from '@/lib/api';
 import ProductCard from '@/components/ProductCard';
 import FilterPanel from '@/components/FilterPanel';
 import SearchBar from '@/components/SearchBar';
+import PageTracker from '@/components/PageTracker';
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -35,6 +36,7 @@ export default async function CategoryPage({ params, searchParams }: Props) {
 
   return (
     <div className="min-h-screen bg-bg">
+      <PageTracker categoryId={category._id} />
       <div className="mx-auto max-w-6xl px-4 py-8">
         {/* Header */}
         <div className="mb-6">

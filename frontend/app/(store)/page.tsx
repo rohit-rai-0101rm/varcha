@@ -4,6 +4,7 @@ import { fetchCategories, fetchProducts } from '@/lib/api';
 import ProductCard from '@/components/ProductCard';
 import StyleMotif from '@/components/StyleMotif';
 import HeroCarousel from '@/components/HeroCarousel';
+import PageTracker from '@/components/PageTracker';
 
 export default async function Home() {
   const [categories, products] = await Promise.all([fetchCategories(), fetchProducts()]);
@@ -18,6 +19,7 @@ export default async function Home() {
 
   return (
     <>
+      <PageTracker />
       {/* ── HERO CAROUSEL ─────────────────────────── */}
       <HeroCarousel slides={heroSlides} firstCategory={categories[0]} />
 

@@ -7,6 +7,7 @@ import MarketplaceButton from '@/components/MarketplaceButton';
 import WishlistButton from '@/components/WishlistButton';
 import AddToCartButton from '@/components/AddToCartButton';
 import ProductImageGallery from '@/components/ProductImageGallery';
+import PageTracker from '@/components/PageTracker';
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -38,6 +39,7 @@ export default async function ProductPage({ params }: Props) {
 
   return (
     <div className="min-h-screen bg-bg">
+      <PageTracker productId={product._id} />
       <div className="mx-auto max-w-6xl px-4 py-8 lg:px-8">
         {/* Breadcrumb */}
         <nav className="mb-6 flex items-center gap-2 font-body text-xs text-ink-soft">

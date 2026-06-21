@@ -1,6 +1,7 @@
 import { fetchProducts } from '@/lib/api';
 import ProductCard from '@/components/ProductCard';
 import SearchBar from '@/components/SearchBar';
+import PageTracker from '@/components/PageTracker';
 
 interface Props {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
@@ -14,6 +15,7 @@ export default async function SearchPage({ searchParams }: Props) {
 
   return (
     <div className="min-h-screen bg-bg">
+      <PageTracker />
       <div className="mx-auto max-w-5xl px-4 py-8">
         <h1 className="mb-4 font-display text-2xl font-semibold text-wine">Search</h1>
         <div className="mb-6">
