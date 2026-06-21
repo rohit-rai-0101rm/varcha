@@ -134,7 +134,10 @@ varcha/
 └── frontend/
     ├── app/              # Next.js App Router — layouts and pages go here
     │   ├── layout.tsx    # Root layout: loads fonts, sets data-theme="light" on <html>
-    │   └── globals.css   # CSS variables for all design tokens (light + dark)
+    │   ├── globals.css   # CSS variables for all design tokens (light + dark)
+    │   ├── (store)/      # Route group for all customer-facing pages (invisible in URL)
+    │   │   └── layout.tsx  # Store layout: nav, cart/auth providers
+    │   └── admin/        # Admin panel — separate layout with sidebar; protected by requireAdmin
     ├── components/       # Shared UI components — client components marked 'use client'
     ├── context/AuthContext.tsx  # Auth state (user, login, logout, refreshUser) — read via useAuth()
     ├── context/CartContext.tsx  # localStorage-persisted cart (key: varcha_cart) — read via useCart()
@@ -145,6 +148,8 @@ varcha/
     ├── lib/api.ts        # Server-side fetch only — no auth headers; returns [] or null, never throws
     └── lib/client-api.ts # Browser fetch — attaches JWT (Authorization) + sessionId (X-Session-Id);
     │                     # use this in 'use client' components, never in server components
+    └── lib/admin-api.ts  # Browser fetch for admin panel — attaches varcha_admin_token as Bearer;
+    │                     # use this in app/admin/ client components, never client-api.ts
     └── tailwind.config.ts  # Token aliases: bg-wine, text-ink-soft, font-display, etc.
 ```
 
@@ -168,6 +173,11 @@ varcha/
 - `attachSession` — reads `X-Session-Id` header → `req.sessionId`; apply globally in `index.ts`
 - `requireAuth` — verifies Bearer JWT, returns 401 if missing/invalid; use on protected routes
 - `optionalAuth` — same verification but never returns 401; use on routes anonymous users can also hit (e.g. events endpoint)
+- `requireAdmin` — verifies Bearer JWT **and** checks for `payload.adminId`; returns 401 if token missing/invalid, 403 if token is valid but has no `adminId` (i.e. a regular user token). Use on every route under `/api/admin/`.
+
+**Admin auth pattern:** Admins are a separate Mongoose collection (`Admins`) with their own bcrypt-hashed passwords — admin credentials do not work on `/api/auth/login` and vice versa. Admin JWTs carry `{ adminId, email, role }` (no `userId`). The token is stored in `localStorage` under key `varcha_admin_token` (separate from `varcha_token`). `frontend/lib/admin-api.ts` is the browser-side admin fetch client — it attaches the admin JWT as `Authorization: Bearer`; use it in all `app/admin/` client components instead of `client-api.ts`. Admin login hits `POST /api/admin/auth/login`. Seed the first admin account with `yarn workspace varcha-backend exec ts-node src/seedAdmin.ts`.
+
+**Route groups:** Customer-facing pages live in `frontend/app/(store)/` (with its own `layout.tsx` that includes the store nav, cart context, etc.). Admin pages live in `frontend/app/admin/` (separate `layout.tsx` with the admin sidebar). The `(store)` group name is invisible in the URL — `/product/[slug]` still resolves correctly. Never put admin pages inside `(store)/` or vice versa.
 
 **Session model quirk:** `Session` uses a string `_id` (the UUID). The schema is defined without a TypeScript interface extending `Document` — doing so conflicts because `Document._id` is typed as `ObjectId`. Schema options include `{ _id: false }` so Mongoose uses our string `_id` field as-is.
 
