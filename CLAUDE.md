@@ -189,6 +189,16 @@ varcha/
 
 **Payment idempotency:** `Payment` model has `gatewayTransactionId: { unique: true }`. `verifyAndFulfill` checks for an existing Payment before opening a transaction — safe to retry the verify endpoint without creating duplicate orders.
 
+**Event tracking pattern:** `PageTracker` (fires `pageview` on mount, `time_spent` on unmount and `beforeunload`) is placed directly in each important page component — homepage, `/product/[slug]`, `/category/[slug]`, `/search` — with the appropriate `productId`/`categoryId` prop. Do **not** put it in `(store)/layout.tsx`; it would double-fire with the page-level trackers. For new pages: import `PageTracker` and render it as the first child, passing whichever of `productId`/`categoryId` applies (or neither for generic pages).
+
+**keepalive fetch for tab close:** `PageTracker` uses `fetch(..., { keepalive: true })` inside `beforeunload` instead of `navigator.sendBeacon` — `sendBeacon` cannot set custom headers, so `X-Session-Id` can't be attached. The `keepalive` flag achieves the same survives-page-unload behavior while allowing full header control. `MIN_MS = 2000` — `time_spent` events under 2 s are silently dropped to filter accidental/instant navigations.
+
+**Server component + tracked client child pattern:** When a server component (e.g. `Navbar`) needs click tracking on its rendered links, extract just the interactive part into a separate `'use client'` component (`CategoryNavLinks`) and pass data down as props. The server component stays async/SSR; the client component handles the `onClick` + `apiLogEvent()`. Never convert the whole parent to a client component just to add tracking.
+
+**`apiLogEvent()` in `client-api.ts`:** best-effort fire-and-forget — never throws, never blocks UI. Use it for all event posting from client components. For `beforeunload` specifically, use the raw `fetch` with `keepalive: true` (see `PageTracker`) instead of `apiLogEvent`, because `apiLogEvent` doesn't set `keepalive`.
+
+**React StrictMode duplicate events in dev:** Next.js dev mode runs React StrictMode, which double-invokes `useEffect` — expect to see duplicate `pageview` docs in Atlas while developing. This does not happen in production builds.
+
 ## Conventions
 
 - 2-space indent, single quotes, trailing commas — enforced by `.prettierrc`
