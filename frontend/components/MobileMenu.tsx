@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { apiLogEvent } from '@/lib/client-api';
 import type { ApiCategory } from '@/lib/api';
 
 interface Props {
@@ -58,7 +59,7 @@ export default function MobileMenu({ categories }: Props) {
               <Link
                 key={cat._id}
                 href={`/category/${cat.slug}`}
-                onClick={() => setOpen(false)}
+                onClick={() => { setOpen(false); apiLogEvent({ type: 'click', categoryId: cat._id }); }}
                 className="rounded-btn px-4 py-2.5 font-body text-sm font-medium text-ink-soft transition-colors hover:bg-bg hover:text-wine"
               >
                 {cat.name}

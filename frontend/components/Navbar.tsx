@@ -4,6 +4,7 @@ import ThemeToggle from './ThemeToggle';
 import MobileMenu from './MobileMenu';
 import AuthNav from './AuthNav';
 import CartIcon from './CartIcon';
+import CategoryNavLinks from './CategoryNavLinks';
 
 export default async function Navbar() {
   const categories = await fetchCategories();
@@ -28,16 +29,7 @@ export default async function Navbar() {
           </Link>
 
           <nav className="hidden flex-1 items-center justify-center gap-8 md:flex">
-            {categories.map((cat) => (
-              <Link
-                key={cat._id}
-                href={`/category/${cat.slug}`}
-                className="group relative font-body text-sm font-medium text-ink-soft transition-colors hover:text-ink"
-              >
-                {cat.name}
-                <span className="absolute -bottom-0.5 left-0 h-px w-0 bg-wine transition-all duration-300 group-hover:w-full" />
-              </Link>
-            ))}
+            <CategoryNavLinks categories={categories} />
           </nav>
 
           <div className="flex items-center gap-2">

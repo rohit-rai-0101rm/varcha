@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import CheckoutCompleteTracker from '@/components/CheckoutCompleteTracker';
 
 type Props = { params: Promise<{ orderId: string }> };
 
@@ -8,6 +9,7 @@ export default async function OrderConfirmationPage({ params }: Props) {
 
   return (
     <main className="mx-auto max-w-xl px-4 py-20 text-center">
+      <CheckoutCompleteTracker />
       <div className="mb-6 flex justify-center">
         <svg
           className="h-16 w-16 text-[var(--wine)]"

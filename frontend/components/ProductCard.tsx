@@ -1,5 +1,8 @@
+'use client';
+
 import Link from 'next/link';
 import Image from 'next/image';
+import { apiLogEvent } from '@/lib/client-api';
 import type { ApiProduct } from '@/lib/api';
 import StyleMotif from './StyleMotif';
 
@@ -14,7 +17,11 @@ export default function ProductCard({ product }: Props) {
   const firstStyle = product.styleIds[0];
 
   return (
-    <Link href={`/product/${product.slug}`} className="group block">
+    <Link
+      href={`/product/${product.slug}`}
+      className="group block"
+      onClick={() => apiLogEvent({ type: 'click', productId: product._id })}
+    >
       {/* Image container */}
       <div className="relative aspect-[4/5] overflow-hidden rounded-card bg-bg">
         {cover ? (
