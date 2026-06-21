@@ -6,10 +6,17 @@ export interface AuthPayload {
   email: string;
 }
 
+export interface AdminPayload {
+  adminId: string;
+  email: string;
+  role: string;
+}
+
 declare global {
   namespace Express {
     interface Request {
       auth?: AuthPayload;
+      adminAuth?: AdminPayload;
       sessionId?: string;
     }
   }
@@ -47,4 +54,25 @@ export function optionalAuth(req: Request, _res: Response, next: NextFunction) {
     }
   }
   next();
+}
+
+export function requireAdmin(req: Request, res: Response, next: NextFunction) {
+  const header = req.headers['authorization'];
+  if (!header?.startsWith('Bearer ')) {
+    res.status(401).json({ message: 'Unauthorised' });
+    return;
+  }
+  const token = header.slice(7);
+  try {
+    const secret = process.env.JWT_SECRET!;
+    const payload = jwt.verify(token, secret) as AdminPayload;
+    if (!payload.adminId) {
+      res.status(403).json({ message: 'Admin access required' });
+      return;
+    }
+    req.adminAuth = payload;
+    next();
+  } catch {
+    res.status(401).json({ message: 'Invalid or expired token' });
+  }
 }

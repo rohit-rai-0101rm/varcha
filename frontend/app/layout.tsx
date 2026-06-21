@@ -1,10 +1,7 @@
 import type { Metadata } from 'next';
 import { Fraunces, Inter, Special_Elite } from 'next/font/google';
 import './globals.css';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
 import Providers from '@/components/Providers';
-import WhatsAppButton from '@/components/WhatsAppButton';
 
 const fraunces = Fraunces({
   subsets: ['latin'],
@@ -40,12 +37,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       className={`${fraunces.variable} ${inter.variable} ${specialElite.variable}`}
     >
       <body className="flex min-h-screen flex-col">
-        <Providers>
-          <Navbar />
-          <main className="flex-1">{children}</main>
-          <Footer />
-          <WhatsAppButton />
-        </Providers>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

@@ -1,5 +1,4 @@
 import { notFound } from 'next/navigation';
-import Image from 'next/image';
 import Link from 'next/link';
 import type { Metadata } from 'next';
 import { fetchProductBySlug } from '@/lib/api';
@@ -7,6 +6,7 @@ import StyleMotif from '@/components/StyleMotif';
 import MarketplaceButton from '@/components/MarketplaceButton';
 import WishlistButton from '@/components/WishlistButton';
 import AddToCartButton from '@/components/AddToCartButton';
+import ProductImageGallery from '@/components/ProductImageGallery';
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -30,6 +30,7 @@ export default async function ProductPage({ params }: Props) {
 
   const productShots = product.images.filter((i) => i.type === 'product-shot');
   const modelShots = product.images.filter((i) => i.type === 'model-shot');
+  const allImages = [...productShots, ...modelShots];
   const mainImage = productShots[0] ?? product.images[0];
 
   const category =
@@ -37,7 +38,7 @@ export default async function ProductPage({ params }: Props) {
 
   return (
     <div className="min-h-screen bg-bg">
-      <div className="mx-auto max-w-5xl px-4 py-8">
+      <div className="mx-auto max-w-6xl px-4 py-8 lg:px-8">
         {/* Breadcrumb */}
         <nav className="mb-6 flex items-center gap-2 font-body text-xs text-ink-soft">
           <Link href="/" className="hover:text-wine">
@@ -55,46 +56,13 @@ export default async function ProductPage({ params }: Props) {
           <span className="text-ink">{product.name}</span>
         </nav>
 
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
-          {/* Images */}
-          <div className="flex flex-col gap-3">
-            {mainImage && (
-              <div className="relative aspect-square overflow-hidden rounded-card border border-line bg-surface">
-                <Image
-                  src={mainImage.url}
-                  alt={product.name}
-                  fill
-                  sizes="(max-width: 768px) 100vw, 50vw"
-                  className="object-cover"
-                  priority
-                />
-                {product.channel === 'website-exclusive' && (
-                  <span className="absolute left-3 top-3 rounded-badge bg-rose-bg px-2 py-0.5 font-annotation text-xs text-rose-ink">
-                    Exclusive edit
-                  </span>
-                )}
-              </div>
-            )}
-            {/* Thumbnail strip for model shots */}
-            {modelShots.length > 0 && (
-              <div className="flex gap-2 overflow-x-auto">
-                {[...productShots.slice(1), ...modelShots].map((img, idx) => (
-                  <div
-                    key={idx}
-                    className="relative h-16 w-16 shrink-0 overflow-hidden rounded-card border border-line bg-surface"
-                  >
-                    <Image
-                      src={img.url}
-                      alt={`${product.name} — ${img.type}`}
-                      fill
-                      sizes="64px"
-                      className="object-cover"
-                    />
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:gap-12">
+          {/* Gallery */}
+          <ProductImageGallery
+            images={allImages}
+            productName={product.name}
+            isExclusive={product.channel === 'website-exclusive'}
+          />
 
           {/* Details */}
           <div className="flex flex-col gap-4">
