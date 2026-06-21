@@ -199,6 +199,12 @@ varcha/
 
 **React StrictMode duplicate events in dev:** Next.js dev mode runs React StrictMode, which double-invokes `useEffect` — expect to see duplicate `pageview` docs in Atlas while developing. This does not happen in production builds.
 
+**Admin pages are all `'use client'`:** Admin pages need auth checks on mount and load data via `admin-api.ts` in `useEffect` — they are never server components. Never use `lib/api.ts` or server-side fetch in `app/admin/`.
+
+**`useParams` in admin client components:** The Next.js 15 "always `await` params" rule applies only to server components. Admin detail pages (e.g. `app/admin/customers/[userId]/page.tsx`) are client components — use `useParams<{ userId: string }>()` from `next/navigation` instead.
+
+**Analytics aggregation rule:** All analytics are computed in MongoDB aggregation pipelines inside `backend/src/services/analyticsService.ts` — never pull raw events into the app and compute in JS. Use `$lookup`, `$group`, `$sort`, `$limit` in Atlas; the service returns already-aggregated results.
+
 ## Conventions
 
 - 2-space indent, single quotes, trailing commas — enforced by `.prettierrc`
