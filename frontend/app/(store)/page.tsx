@@ -1,6 +1,13 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
 import { fetchCategories, fetchProducts } from '@/lib/api';
+
+export const metadata: Metadata = {
+  title: 'Varcha — Curated Artificial Jewellery',
+  description:
+    'Handcrafted artificial jewellery rooted in Indian craft traditions. Premium bridal and everyday pieces — shop the exclusive line or browse our Amazon and Flipkart collections.',
+};
 import ProductCard from '@/components/ProductCard';
 import StyleMotif from '@/components/StyleMotif';
 import HeroCarousel from '@/components/HeroCarousel';

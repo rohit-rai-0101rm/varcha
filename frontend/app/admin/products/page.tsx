@@ -33,8 +33,8 @@ export default function AdminProductsPage() {
     try {
       await adminApiDeleteProduct(id);
       setProducts((p) => p.filter((x) => x._id !== id));
-    } catch (e: any) {
-      alert(e.message);
+    } catch (e: unknown) {
+      alert((e as Error).message);
     }
   }
 

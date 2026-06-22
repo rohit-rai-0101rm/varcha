@@ -13,7 +13,7 @@ interface Category {
   name: string;
   slug: string;
   isActive: boolean;
-  parentCategory?: { name: string } | null;
+  parentCategory?: { _id: string; name: string } | null;
 }
 
 const INPUT = 'w-full rounded-btn border border-line bg-surface px-3 py-2 font-body text-sm text-ink focus:border-wine focus:outline-none focus:ring-1 focus:ring-wine';
@@ -51,7 +51,7 @@ export default function AdminCategoriesPage() {
     setEditing(c);
     setName(c.name);
     setSlug(c.slug);
-    setParentId((c.parentCategory as any)?._id ?? '');
+    setParentId(c.parentCategory?._id ?? '');
     setIsActive(c.isActive);
     setError('');
   }
@@ -65,8 +65,8 @@ export default function AdminCategoriesPage() {
       else await adminApiCreateCategory(payload);
       await load();
       startNew();
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      setError((err as Error).message);
     } finally {
       setSaving(false);
     }
@@ -77,7 +77,7 @@ export default function AdminCategoriesPage() {
     try {
       await adminApiDeleteCategory(id);
       setCategories((c) => c.filter((x) => x._id !== id));
-    } catch (e: any) { alert(e.message); }
+    } catch (e: unknown) { alert((e as Error).message); }
   }
 
   const topLevel = categories.filter((c) => !c.parentCategory);

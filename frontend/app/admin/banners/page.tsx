@@ -57,8 +57,8 @@ export default function AdminBannersPage() {
       });
       await load();
       resetForm();
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      setError((err as Error).message);
     } finally {
       setSaving(false);
     }
@@ -68,7 +68,7 @@ export default function AdminBannersPage() {
     try {
       const updated = await adminApiToggleBanner(id);
       setBanners((b) => b.map((x) => (x._id === id ? { ...x, isActive: updated.isActive } : x)));
-    } catch (e: any) { alert(e.message); }
+    } catch (e: unknown) { alert((e as Error).message); }
   }
 
   async function handleDelete(id: string) {
@@ -76,7 +76,7 @@ export default function AdminBannersPage() {
     try {
       await adminApiDeleteBanner(id);
       setBanners((b) => b.filter((x) => x._id !== id));
-    } catch (e: any) { alert(e.message); }
+    } catch (e: unknown) { alert((e as Error).message); }
   }
 
   return (
@@ -97,7 +97,7 @@ export default function AdminBannersPage() {
           </div>
           <div className="flex flex-col gap-1">
             <label className={LABEL}>Position *</label>
-            <select className={INPUT} value={position} onChange={(e) => setPosition(e.target.value as any)}>
+            <select className={INPUT} value={position} onChange={(e) => setPosition(e.target.value as typeof POSITIONS[number])}>
               {POSITIONS.map((p) => <option key={p} value={p}>{p}</option>)}
             </select>
           </div>

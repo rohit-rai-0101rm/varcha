@@ -60,8 +60,8 @@ export default function AdminStylesPage() {
       else await adminApiCreateStyle(payload);
       await load();
       startNew();
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      setError((err as Error).message);
     } finally {
       setSaving(false);
     }
@@ -72,7 +72,7 @@ export default function AdminStylesPage() {
     try {
       await adminApiDeleteStyle(id);
       setStyles((s) => s.filter((x) => x._id !== id));
-    } catch (e: any) { alert(e.message); }
+    } catch (e: unknown) { alert((e as Error).message); }
   }
 
   return (
@@ -98,7 +98,7 @@ export default function AdminStylesPage() {
           </div>
           <div className="flex flex-col gap-1">
             <label className={LABEL}>Family *</label>
-            <select className={INPUT} value={family} onChange={(e) => setFamily(e.target.value as any)}>
+            <select className={INPUT} value={family} onChange={(e) => setFamily(e.target.value as typeof FAMILIES[number])}>
               {FAMILIES.map((f) => <option key={f} value={f}>{f}</option>)}
             </select>
           </div>

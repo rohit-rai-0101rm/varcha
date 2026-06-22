@@ -52,8 +52,8 @@ export default function AdminSettingsPage() {
       });
       setSaved(true);
       setTimeout(() => setSaved(false), 3000);
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      setError((err as Error).message);
     } finally {
       setSaving(false);
     }

@@ -50,8 +50,8 @@ export default function AdminOrdersPage() {
     try {
       const updated = await adminApiUpdateOrderStatus(orderId, newStatus);
       setOrders((o) => o.map((x) => x._id === orderId ? { ...x, orderStatus: updated.orderStatus } : x));
-    } catch (e: any) {
-      alert(e.message);
+    } catch (e: unknown) {
+      alert((e as Error).message);
     } finally {
       setUpdating(null);
     }

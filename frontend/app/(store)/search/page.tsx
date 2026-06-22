@@ -1,7 +1,14 @@
+import type { Metadata } from 'next';
 import { fetchProducts } from '@/lib/api';
 import ProductCard from '@/components/ProductCard';
 import SearchBar from '@/components/SearchBar';
 import PageTracker from '@/components/PageTracker';
+
+export const metadata: Metadata = {
+  title: 'Search — Varcha',
+  description: 'Search Varcha for handcrafted artificial jewellery by name, category, or style.',
+  robots: { index: false },
+};
 
 interface Props {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
