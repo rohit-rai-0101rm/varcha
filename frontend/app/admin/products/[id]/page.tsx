@@ -55,21 +55,21 @@ export default function ProductFormPage({ params }: { params: Promise<{ id: stri
     adminApiListCategories().then(setCategories);
     adminApiListStyles().then(setStyles);
     if (!isNew) {
-      adminApiGetProduct(id).then((p: any) => {
+      adminApiGetProduct(id).then((p: Record<string, unknown> | null) => {
         if (!p) { router.replace('/admin/products'); return; }
-        setName(p.name);
-        setSlug(p.slug);
-        setCategoryId(p.categoryId?._id ?? p.categoryId ?? '');
-        setPrice(String(p.price));
-        setGender(p.gender ?? 'women');
-        setChannel(p.channel);
+        setName(String(p.name ?? ''));
+        setSlug(String(p.slug ?? ''));
+        setCategoryId(String((p.categoryId as Record<string, unknown>)?._id ?? p.categoryId ?? ''));
+        setPrice(String(p.price ?? ''));
+        setGender(String(p.gender ?? 'women'));
+        setChannel((p.channel as 'marketplace' | 'website-exclusive') ?? 'marketplace');
         setStockQty(String(p.stockQty ?? ''));
-        setDescription(p.description ?? '');
-        setIsActive(p.isActive);
-        setSelectedStyles((p.styleIds ?? []).map((s: any) => s._id ?? s));
-        setSelectedOccasions(p.occasion ?? []);
-        setImages(p.images?.length ? p.images : [{ url: '', type: 'product-shot' }]);
-        setMarketplaceLinks(p.marketplaceLinks?.length ? p.marketplaceLinks : [{ platform: 'amazon', url: '' }]);
+        setDescription(String(p.description ?? ''));
+        setIsActive(Boolean(p.isActive));
+        setSelectedStyles((p.styleIds as Array<{ _id: string } | string> ?? []).map((s) => (typeof s === 'string' ? s : s._id)));
+        setSelectedOccasions((p.occasion as string[] | undefined) ?? []);
+        setImages((p.images as { url: string; type: string }[] | undefined)?.length ? p.images as { url: string; type: string }[] : [{ url: '', type: 'product-shot' }]);
+        setMarketplaceLinks((p.marketplaceLinks as { platform: string; url: string }[] | undefined)?.length ? p.marketplaceLinks as { platform: string; url: string }[] : [{ platform: 'amazon', url: '' }]);
         setLoading(false);
       });
     }
@@ -101,8 +101,8 @@ export default function ProductFormPage({ params }: { params: Promise<{ id: stri
       if (isNew) await adminApiCreateProduct(payload);
       else await adminApiUpdateProduct(id, payload);
       router.push('/admin/products');
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      setError((err as Error).message);
     } finally {
       setSaving(false);
     }

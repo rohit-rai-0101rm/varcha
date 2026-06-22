@@ -1,3 +1,5 @@
+import Link from 'next/link';
+
 export const metadata = {
   title: 'Jewellery Care Guide — Varcha',
   description: 'How to clean and store your Varcha pieces to keep them looking their best.',
@@ -58,9 +60,9 @@ export default function CareGuidePage() {
 
         <p className="mt-10 font-body text-xs text-ink-soft">
           Questions about a specific piece?{' '}
-          <a href="/contact" className="text-wine hover:underline">
+          <Link href="/contact" className="text-wine hover:underline">
             Contact us
-          </a>{' '}
+          </Link>{' '}
           and we&apos;ll advise you directly.
         </p>
       </div>

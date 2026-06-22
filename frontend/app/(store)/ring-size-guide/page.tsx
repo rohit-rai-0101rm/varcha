@@ -1,3 +1,5 @@
+import Link from 'next/link';
+
 export const metadata = {
   title: 'Ring Size Guide — Varcha',
   description: 'Find your ring size at home using our simple guide.',
@@ -80,9 +82,9 @@ export default function RingSizeGuidePage() {
 
         <p className="mt-8 font-body text-xs text-ink-soft">
           Not sure?{' '}
-          <a href="/contact" className="text-wine hover:underline">
+          <Link href="/contact" className="text-wine hover:underline">
             WhatsApp us
-          </a>{' '}
+          </Link>{' '}
           with your finger measurement and we&apos;ll advise you before you order.
         </p>
       </div>

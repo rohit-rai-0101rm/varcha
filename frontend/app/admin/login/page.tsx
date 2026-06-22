@@ -21,8 +21,8 @@ export default function AdminLoginPage() {
       const { token } = await adminApiLogin(email, password);
       saveAdminToken(token);
       router.replace('/admin/products');
-    } catch (err: any) {
-      setError(err.message ?? 'Login failed');
+    } catch (err: unknown) {
+      setError((err as Error).message ?? 'Login failed');
     } finally {
       setLoading(false);
     }

@@ -24,9 +24,21 @@ const specialElite = Special_Elite({
   display: 'swap',
 });
 
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://varcha.in';
+
 export const metadata: Metadata = {
-  title: 'Varcha',
-  description: 'Curated artificial jewelry',
+  metadataBase: new URL(BASE_URL),
+  title: {
+    default: 'Varcha — Curated Artificial Jewellery',
+    template: '%s — Varcha',
+  },
+  description:
+    'Handcrafted artificial jewellery rooted in Indian craft traditions. Premium bridal and everyday pieces.',
+  openGraph: {
+    siteName: 'Varcha',
+    type: 'website',
+    locale: 'en_IN',
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

@@ -1,4 +1,4 @@
-import { Suspense } from 'react';
+import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { fetchCategoryBySlug, fetchProducts, fetchStyles } from '@/lib/api';
 import ProductCard from '@/components/ProductCard';
@@ -9,6 +9,16 @@ import PageTracker from '@/components/PageTracker';
 interface Props {
   params: Promise<{ slug: string }>;
   searchParams: Promise<Record<string, string | string[] | undefined>>;
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug } = await params;
+  const category = await fetchCategoryBySlug(slug);
+  if (!category) return { title: 'Category — Varcha' };
+  return {
+    title: `${category.name} — Varcha`,
+    description: `Shop ${category.name} — handcrafted artificial jewellery from Varcha. Browse our curated collection.`,
+  };
 }
 
 function sp(v: string | string[] | undefined): string | undefined {
@@ -53,9 +63,14 @@ export default async function CategoryPage({ params, searchParams }: Props) {
         <div className="flex flex-col gap-8 lg:flex-row">
           {/* Filter sidebar */}
           <div className="w-full lg:w-56 lg:shrink-0">
-            <Suspense fallback={null}>
-              <FilterPanel styles={styles} />
-            </Suspense>
+            <FilterPanel
+              styles={styles}
+              initialStyle={sp(filters.style)}
+              initialOccasion={sp(filters.occasion)}
+              initialGender={sp(filters.gender)}
+              initialMinPrice={sp(filters.minPrice)}
+              initialMaxPrice={sp(filters.maxPrice)}
+            />
           </div>
 
           {/* Product grid */}
