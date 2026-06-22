@@ -207,6 +207,12 @@ varcha/
 
 **Analytics aggregation rule:** All analytics are computed in MongoDB aggregation pipelines inside `backend/src/services/analyticsService.ts` — never pull raw events into the app and compute in JS. Use `$lookup`, `$group`, `$sort`, `$limit` in Atlas; the service returns already-aggregated results.
 
+**`next/image` hostname enforcement:** `frontend/next.config.ts` lists `remotePatterns` for `<Image>`. Currently allowed: `res.cloudinary.com`, `images.unsplash.com`, `m.media-amazon.com`, `images-na.ssl-images-amazon.com`, `placehold.co`. Any product or banner with an image URL from an unlisted hostname causes a 500 at SSR time on **every page that renders that product** — including `/search`, which renders all products. Uploaded images go through Cloudinary so they're automatically safe; the risk is manually pasted URLs or test data. If you need a new image host, add it to `remotePatterns` in `next.config.ts`.
+
+**Featured Pieces strip:** `isFeatured: true` on a Product makes it appear in `GET /api/products?featured=true`. The homepage fetches this in parallel alongside other data in `Promise.all`. `FeaturedStrip` only renders when `featuredProducts.length > 0` — if no products are featured, the strip is completely absent. Admin product form has a "Featured on homepage" checkbox. For best visual results in the strip, upload a `model-shot` image — `FeaturedStrip` prefers `model-shot`, falls back to `product-shot`.
+
+**Image upload route and multer error handling:** `POST /api/admin/upload` accepts `multipart/form-data` with a `file` field (max 10 MB). Returns `{ url: string }`. The 4-argument Express error handler at the bottom of `backend/src/routes/admin.ts` catches `MulterError` with code `LIMIT_FILE_SIZE` and returns HTTP 400 with a clean JSON message — it **must** be the last `router.use()` call to work. Without it, oversized uploads return an HTML 500 stack trace.
+
 ## Conventions
 
 - 2-space indent, single quotes, trailing commas — enforced by `.prettierrc`
