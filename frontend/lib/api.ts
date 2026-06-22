@@ -84,3 +84,33 @@ export async function fetchCategoryBySlug(slug: string): Promise<ApiCategory | n
   if (!res.ok) return null;
   return res.json();
 }
+
+export interface ApiBanner {
+  _id: string;
+  image: string;
+  linkUrl: string;
+  position: 'home-hero' | 'category-top' | 'sidebar';
+  isActive: boolean;
+  startDate?: string;
+  endDate?: string;
+}
+
+export interface ApiSettings {
+  whatsappNumber: string;
+  contactEmail: string;
+  homeBannerEnabled: boolean;
+  firstOrderDiscountText: string;
+}
+
+export async function fetchBanners(position?: string): Promise<ApiBanner[]> {
+  const qs = position ? `?position=${encodeURIComponent(position)}` : '';
+  const res = await fetch(`${API}/api/banners${qs}`, { next: { revalidate: 30 } });
+  if (!res.ok) return [];
+  return res.json();
+}
+
+export async function fetchSettings(): Promise<ApiSettings | null> {
+  const res = await fetch(`${API}/api/settings`, { cache: 'no-store' });
+  if (!res.ok) return null;
+  return res.json();
+}
