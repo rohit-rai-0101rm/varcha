@@ -7,6 +7,7 @@ import {
   adminApiDeleteBanner,
   adminApiToggleBanner,
 } from '@/lib/admin-api';
+import ImageUploader from '@/components/admin/ImageUploader';
 
 interface Banner {
   _id: string;
@@ -21,6 +22,12 @@ interface Banner {
 const POSITIONS = ['home-hero', 'category-top', 'sidebar'] as const;
 const INPUT = 'w-full rounded-btn border border-line bg-surface px-3 py-2 font-body text-sm text-ink focus:border-wine focus:outline-none focus:ring-1 focus:ring-wine';
 const LABEL = 'font-body text-xs font-medium text-ink-soft';
+
+const BANNER_HINTS: Record<typeof POSITIONS[number], string> = {
+  'home-hero': 'Recommended: 1920×600 px · landscape · JPG or WebP',
+  'category-top': 'Recommended: 1440×320 px · wide strip · JPG or WebP',
+  'sidebar': 'Recommended: 400×600 px · portrait · JPG or WebP',
+};
 
 export default function AdminBannersPage() {
   const [banners, setBanners] = useState<Banner[]>([]);
@@ -47,6 +54,7 @@ export default function AdminBannersPage() {
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
+    if (!image) { setError('Please upload or paste a banner image URL.'); return; }
     setSaving(true); setError('');
     try {
       await adminApiCreateBanner({
@@ -87,20 +95,35 @@ export default function AdminBannersPage() {
         <h2 className="mb-4 font-body text-sm font-medium text-ink">Add banner</h2>
         {error && <p className="mb-3 font-body text-xs text-red-600">{error}</p>}
         <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-4">
+
+          {/* Position picker — above the uploader so the hint updates live */}
           <div className="col-span-2 flex flex-col gap-1">
-            <label className={LABEL}>Image URL *</label>
-            <input className={INPUT} required value={image} onChange={(e) => setImage(e.target.value)} placeholder="https://..." />
-          </div>
-          <div className="flex flex-col gap-1">
-            <label className={LABEL}>Link URL</label>
-            <input className={INPUT} value={linkUrl} onChange={(e) => setLinkUrl(e.target.value)} />
-          </div>
-          <div className="flex flex-col gap-1">
             <label className={LABEL}>Position *</label>
-            <select className={INPUT} value={position} onChange={(e) => setPosition(e.target.value as typeof POSITIONS[number])}>
+            <select
+              className={INPUT}
+              value={position}
+              onChange={(e) => { setPosition(e.target.value as typeof POSITIONS[number]); setImage(''); }}
+            >
               {POSITIONS.map((p) => <option key={p} value={p}>{p}</option>)}
             </select>
           </div>
+
+          {/* Image uploader — hint changes with position */}
+          <div className="col-span-2">
+            <ImageUploader
+              value={image}
+              onChange={setImage}
+              folder="banners"
+              hint={BANNER_HINTS[position]}
+              label="Banner image *"
+            />
+          </div>
+
+          <div className="col-span-2 flex flex-col gap-1">
+            <label className={LABEL}>Link URL (where the banner clicks to)</label>
+            <input className={INPUT} value={linkUrl} onChange={(e) => setLinkUrl(e.target.value)} />
+          </div>
+
           <div className="flex flex-col gap-1">
             <label className={LABEL}>Start date</label>
             <input className={INPUT} type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
@@ -109,8 +132,9 @@ export default function AdminBannersPage() {
             <label className={LABEL}>End date</label>
             <input className={INPUT} type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
           </div>
+
           <div className="col-span-2">
-            <button type="submit" disabled={saving} className="rounded-btn bg-wine px-5 py-2 font-body text-sm text-surface disabled:opacity-60">
+            <button type="submit" disabled={saving || !image} className="rounded-btn bg-wine px-5 py-2 font-body text-sm text-surface disabled:opacity-60">
               {saving ? 'Adding…' : 'Add banner'}
             </button>
           </div>

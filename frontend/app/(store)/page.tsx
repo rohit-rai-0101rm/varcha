@@ -14,9 +14,10 @@ import FeaturedStrip from '@/components/FeaturedStrip';
 import PageTracker from '@/components/PageTracker';
 
 export default async function Home() {
-  const [categories, products, settings, heroBanners] = await Promise.all([
+  const [categories, products, featuredProducts, settings, heroBanners] = await Promise.all([
     fetchCategories(),
     fetchProducts(),
+    fetchProducts({ featured: 'true' }),
     fetchSettings(),
     fetchBanners('home-hero'),
   ]);
@@ -26,10 +27,6 @@ export default async function Home() {
   const fallbackSlides = products
     .filter((p) => p.channel === 'website-exclusive' && p.images.length > 0)
     .slice(0, 4);
-
-  const featuredProducts = products
-    .filter((p) => p.channel === 'website-exclusive')
-    .slice(0, 8);
 
   return (
     <>

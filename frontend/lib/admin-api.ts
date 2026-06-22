@@ -233,6 +233,22 @@ export async function adminApiGetCustomerDetail(userId: string) {
   return res.json();
 }
 
+// ── Image upload ──────────────────────────────────────────────────────────────
+
+export async function adminApiUploadImage(file: File, folder: string): Promise<string> {
+  const token = getAdminToken();
+  const formData = new FormData();
+  formData.append('file', file);
+  const res = await fetch(`${API}/api/admin/upload?folder=${encodeURIComponent(folder)}`, {
+    method: 'POST',
+    headers: token ? { Authorization: `Bearer ${token}` } : {},
+    body: formData,
+  });
+  const json = await res.json();
+  if (!res.ok) throw new Error(json.message ?? 'Upload failed');
+  return json.url as string;
+}
+
 // ── Settings ──────────────────────────────────────────────────────────────────
 
 export async function adminApiGetSettings() {

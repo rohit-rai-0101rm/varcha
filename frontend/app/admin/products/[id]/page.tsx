@@ -9,6 +9,7 @@ import {
   adminApiListCategories,
   adminApiListStyles,
 } from '@/lib/admin-api';
+import ImageUploader from '@/components/admin/ImageUploader';
 
 interface Category { _id: string; name: string }
 interface Style { _id: string; name: string; family: string }
@@ -46,6 +47,7 @@ export default function ProductFormPage({ params }: { params: Promise<{ id: stri
   const [stockQty, setStockQty] = useState('');
   const [description, setDescription] = useState('');
   const [isActive, setIsActive] = useState(true);
+  const [isFeatured, setIsFeatured] = useState(false);
   const [selectedStyles, setSelectedStyles] = useState<string[]>([]);
   const [selectedOccasions, setSelectedOccasions] = useState<string[]>([]);
   const [images, setImages] = useState<{ url: string; type: string }[]>([{ url: '', type: 'product-shot' }]);
@@ -66,6 +68,7 @@ export default function ProductFormPage({ params }: { params: Promise<{ id: stri
         setStockQty(String(p.stockQty ?? ''));
         setDescription(String(p.description ?? ''));
         setIsActive(Boolean(p.isActive));
+        setIsFeatured(Boolean(p.isFeatured));
         setSelectedStyles((p.styleIds as Array<{ _id: string } | string> ?? []).map((s) => (typeof s === 'string' ? s : s._id)));
         setSelectedOccasions((p.occasion as string[] | undefined) ?? []);
         setImages((p.images as { url: string; type: string }[] | undefined)?.length ? p.images as { url: string; type: string }[] : [{ url: '', type: 'product-shot' }]);
@@ -92,6 +95,7 @@ export default function ProductFormPage({ params }: { params: Promise<{ id: stri
       stockQty: channel === 'website-exclusive' ? Number(stockQty) : undefined,
       description,
       isActive,
+      isFeatured,
       styleIds: selectedStyles,
       occasion: selectedOccasions,
       images: images.filter((i) => i.url.trim()),
@@ -263,26 +267,30 @@ export default function ProductFormPage({ params }: { params: Promise<{ id: stri
         </div>
 
         {/* Images */}
-        <div className="flex flex-col gap-2">
-          <label className={LABEL}>Images (URL + type)</label>
+        <div className="flex flex-col gap-4">
+          <label className={LABEL}>Images</label>
           {images.map((img, i) => (
-            <div key={i} className="flex gap-2">
-              <input
-                className={`${INPUT} flex-1`}
-                placeholder="https://..."
+            <div key={i} className="rounded-card border border-line p-3 flex flex-col gap-3">
+              <div className="flex items-center justify-between">
+                <select
+                  className="rounded-btn border border-line bg-surface px-2 py-1.5 font-body text-sm text-ink"
+                  value={img.type}
+                  onChange={(e) => setImages(images.map((x, j) => j === i ? { ...x, type: e.target.value } : x))}
+                >
+                  {IMAGE_TYPES.map((t) => <option key={t} value={t}>{t}</option>)}
+                </select>
+                {images.length > 1 && (
+                  <button type="button" onClick={() => setImages(images.filter((_, j) => j !== i))} className="font-body text-xs text-ink-soft hover:text-red-600">
+                    Remove
+                  </button>
+                )}
+              </div>
+              <ImageUploader
                 value={img.url}
-                onChange={(e) => setImages(images.map((x, j) => j === i ? { ...x, url: e.target.value } : x))}
+                onChange={(url) => setImages(images.map((x, j) => j === i ? { ...x, url } : x))}
+                folder="products"
+                hint="Recommended: 800×1067 px · 3:4 portrait · JPG or WebP"
               />
-              <select
-                className="rounded-btn border border-line bg-surface px-2 py-2 font-body text-sm text-ink"
-                value={img.type}
-                onChange={(e) => setImages(images.map((x, j) => j === i ? { ...x, type: e.target.value } : x))}
-              >
-                {IMAGE_TYPES.map((t) => <option key={t} value={t}>{t}</option>)}
-              </select>
-              {images.length > 1 && (
-                <button type="button" onClick={() => setImages(images.filter((_, j) => j !== i))} className="font-body text-sm text-ink-soft hover:text-red-600">✕</button>
-              )}
             </div>
           ))}
           <button type="button" onClick={() => setImages([...images, { url: '', type: 'product-shot' }])} className="self-start font-body text-xs text-wine hover:underline">
@@ -290,11 +298,22 @@ export default function ProductFormPage({ params }: { params: Promise<{ id: stri
           </button>
         </div>
 
-        {/* Active */}
-        <label className="flex cursor-pointer items-center gap-2 font-body text-sm text-ink">
-          <input type="checkbox" checked={isActive} onChange={(e) => setIsActive(e.target.checked)} />
-          Active (visible on site)
-        </label>
+        {/* Active + Featured */}
+        <div className="flex flex-col gap-2">
+          <label className="flex cursor-pointer items-center gap-2 font-body text-sm text-ink">
+            <input type="checkbox" checked={isActive} onChange={(e) => setIsActive(e.target.checked)} />
+            Active (visible on site)
+          </label>
+          <label className="flex cursor-pointer items-center gap-2 font-body text-sm text-ink">
+            <input type="checkbox" checked={isFeatured} onChange={(e) => setIsFeatured(e.target.checked)} />
+            <span>
+              Featured on homepage
+              <span className="ml-1.5 font-annotation text-[10px] tracking-wide text-ink-soft">
+                shows in Featured Pieces strip · upload a model-shot image for best results
+              </span>
+            </span>
+          </label>
+        </div>
 
         {/* Actions */}
         <div className="flex gap-3 pt-2">

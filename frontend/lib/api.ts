@@ -33,6 +33,7 @@ export interface ApiProduct {
   marketplaceLinks?: Array<{ platform: string; url: string }>;
   stockQty?: number;
   isActive: boolean;
+  isFeatured: boolean;
   createdAt: string;
 }
 
@@ -58,6 +59,7 @@ export interface ProductFilters {
   occasion?: string;
   gender?: string;
   search?: string;
+  featured?: string;
 }
 
 export async function fetchProducts(filters: ProductFilters = {}): Promise<ApiProduct[]> {

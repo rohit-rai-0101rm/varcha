@@ -129,6 +129,7 @@ varcha/
 │   ├── routes/           # One Router file per resource — mounts controllers
 │   ├── controllers/      # Request/response handling; calls service layer
 │   ├── services/         # Business logic + Mongoose queries (populate here, not in routes)
+│   ├── services/uploadService.ts  # Cloudinary upload_stream wrapper: (buffer, folder) → Promise<string secure_url>
 │   ├── models/           # Mongoose schemas + models
 │   └── seed.ts           # One-shot seed script; clears and repopulates all collections
 └── frontend/
@@ -139,6 +140,7 @@ varcha/
     │   │   └── layout.tsx  # Store layout: nav, cart/auth providers
     │   └── admin/        # Admin panel — separate layout with sidebar; protected by requireAdmin
     ├── components/       # Shared UI components — client components marked 'use client'
+    ├── components/admin/ImageUploader.tsx  # Drag-and-drop/click Cloudinary upload. Props: { value, onChange, folder, hint? }. Calls adminApiUploadImage() and updates value with the returned URL. Has "Paste URL instead" fallback. Uses plain <img>, not next/image, because pasted URLs may not be in remotePatterns.
     ├── context/AuthContext.tsx  # Auth state (user, login, logout, refreshUser) — read via useAuth()
     ├── context/CartContext.tsx  # localStorage-persisted cart (key: varcha_cart) — read via useCart()
     │                            # Works for guests, no backend needed. addItem caps at stockQty.

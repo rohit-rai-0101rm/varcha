@@ -10,6 +10,7 @@ export interface ProductFilters {
   occasion?: string;
   gender?: string;
   search?: string;
+  featured?: string;
 }
 
 export async function listProducts(filters: ProductFilters) {
@@ -40,6 +41,8 @@ export async function listProducts(filters: ProductFilters) {
   }
 
   if (filters.gender) query.gender = filters.gender;
+
+  if (filters.featured === 'true') query.isFeatured = true;
 
   if (filters.search?.trim()) query.$text = { $search: filters.search };
 

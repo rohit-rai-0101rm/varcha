@@ -102,6 +102,7 @@ export interface Product {
   marketplaceLinks?: MarketplaceLink[]; // only when channel = 'marketplace'
   stockQty?: number; // only meaningful when channel = 'website-exclusive'
   isActive: boolean;
+  isFeatured: boolean; // shows in Featured Pieces strip on homepage
   createdAt: Date;
 }
 
