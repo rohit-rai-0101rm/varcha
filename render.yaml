@@ -1,0 +1,50 @@
+services:
+  # ── Backend: Express API ──────────────────────────────────────────────────
+  - type: web
+    name: varcha-backend
+    runtime: node
+    branch: dev
+    buildCommand: yarn install && yarn workspace varcha-shared build && yarn workspace varcha-backend build
+    startCommand: yarn workspace varcha-backend start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONGODB_URI
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
+      - key: RAZORPAY_KEY_ID
+        sync: false
+      - key: RAZORPAY_KEY_SECRET
+        sync: false
+      - key: RAZORPAY_WEBHOOK_SECRET
+        sync: false
+      - key: RESEND_API_KEY
+        sync: false
+      - key: RESEND_FROM
+        sync: false
+
+  # ── Frontend: Next.js ─────────────────────────────────────────────────────
+  - type: web
+    name: varcha-frontend
+    runtime: node
+    branch: dev
+    buildCommand: yarn install && yarn workspace varcha-shared build && yarn workspace varcha-frontend build
+    startCommand: yarn workspace varcha-frontend start
+    healthCheckPath: /
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NEXT_PUBLIC_API_URL
+        sync: false
+      - key: NEXT_PUBLIC_RAZORPAY_KEY_ID
+        sync: false
+      - key: NEXT_PUBLIC_SITE_URL
+        sync: false
