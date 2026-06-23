@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import * as svc from '../services/adminService';
 import * as analytics from '../services/analyticsService';
+import { uploadToCloudinary } from '../services/uploadService';
 
 function err(res: Response, e: any) {
   res.status(e?.status ?? 500).json({ message: e?.message ?? 'Server error' });
@@ -192,5 +193,16 @@ export async function getCustomerDetail(req: Request, res: Response) {
     const data = await analytics.getCustomerDetail(req.params.userId);
     if (!data.user) { res.status(404).json({ message: 'Not found' }); return; }
     res.json(data);
+  } catch (e) { err(res, e); }
+}
+
+// ── Image upload ──────────────────────────────────────────────────────────────
+
+export async function uploadImage(req: Request, res: Response) {
+  try {
+    if (!req.file) { res.status(400).json({ message: 'No file received' }); return; }
+    const folder = `varcha/${(req.query.folder as string) || 'misc'}`;
+    const url = await uploadToCloudinary(req.file.buffer, folder);
+    res.json({ url });
   } catch (e) { err(res, e); }
 }

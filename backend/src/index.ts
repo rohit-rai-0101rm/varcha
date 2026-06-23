@@ -16,6 +16,7 @@ import checkoutRouter from './routes/checkout';
 import ordersRouter from './routes/orders';
 import adminRouter from './routes/admin';
 import { getSettings } from './services/adminService';
+import Banner from './models/Banner';
 
 const app = express();
 const PORT = process.env.PORT ?? 4000;
@@ -38,6 +39,16 @@ app.use('/api/orders', ordersRouter);
 app.use('/api/admin', adminRouter);
 app.get('/api/settings', async (_req, res) => {
   try { res.json(await getSettings()); } catch { res.status(500).json({ message: 'Server error' }); }
+});
+
+app.get('/api/banners', async (req, res) => {
+  try {
+    const { position } = req.query as { position?: string };
+    const filter: Record<string, unknown> = { isActive: true };
+    if (position) filter.position = position;
+    const banners = await Banner.find(filter).sort({ createdAt: -1 });
+    res.json(banners);
+  } catch { res.status(500).json({ message: 'Server error' }); }
 });
 
 connectDb().then(() => {

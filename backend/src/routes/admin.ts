@@ -1,6 +1,9 @@
-import { Router } from 'express';
+import { Router, Request, Response, NextFunction } from 'express';
+import multer, { MulterError } from 'multer';
 import { requireAdmin } from '../middleware/auth';
 import * as ctrl from '../controllers/adminController';
+
+const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 10 * 1024 * 1024 } });
 
 const router = Router();
 
@@ -49,5 +52,18 @@ router.get('/analytics/sessions', requireAdmin, ctrl.getTopSessions);
 // Customers
 router.get('/customers', requireAdmin, ctrl.listCustomers);
 router.get('/customers/:userId', requireAdmin, ctrl.getCustomerDetail);
+
+// Image upload → Cloudinary
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+router.post('/upload', requireAdmin, upload.single('file') as any, ctrl.uploadImage);
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+router.use((err: unknown, _req: Request, res: Response, _next: NextFunction) => {
+  if (err instanceof MulterError && err.code === 'LIMIT_FILE_SIZE') {
+    res.status(400).json({ message: 'File too large — maximum size is 10 MB' });
+    return;
+  }
+  res.status(500).json({ message: 'Internal server error' });
+});
 
 export default router;

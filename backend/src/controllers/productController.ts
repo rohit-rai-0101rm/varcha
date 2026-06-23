@@ -7,7 +7,7 @@ function str(v: unknown): string | undefined {
 
 export async function list(req: Request, res: Response) {
   try {
-    const { category, style, minPrice, maxPrice, occasion, gender, search } = req.query;
+    const { category, style, minPrice, maxPrice, occasion, gender, search, featured } = req.query;
     const products = await productService.listProducts({
       category: str(category),
       style: str(style),
@@ -16,6 +16,7 @@ export async function list(req: Request, res: Response) {
       occasion: str(occasion),
       gender: str(gender),
       search: str(search),
+      featured: str(featured),
     });
     res.json(products);
   } catch (err) {
