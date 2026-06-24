@@ -103,7 +103,7 @@ export default function HeroCarousel({ banners, fallbackSlides, firstCategory }:
 
           {/* body copy */}
           <p className="mt-4 max-w-md font-body text-sm leading-relaxed text-white/65 sm:text-base">
-            Handcrafted pieces rooted in Indian craft traditions and the world's finest heritage.
+            Handcrafted pieces rooted in Indian craft traditions and the world&apos;s finest heritage.
           </p>
 
           {/* CTAs + dots */}
