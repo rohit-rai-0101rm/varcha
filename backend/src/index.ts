@@ -51,8 +51,14 @@ app.get('/api/banners', async (req, res) => {
   } catch { res.status(500).json({ message: 'Server error' }); }
 });
 
-connectDb().then(() => {
+// Connect to DB on module load (Mongoose caches the connection for serverless reuse)
+connectDb();
+
+// In local dev, start the HTTP server; Vercel handles this in serverless mode
+if (!process.env.VERCEL) {
   app.listen(PORT, () => {
     console.log(`Backend listening on http://localhost:${PORT}`);
   });
-});
+}
+
+export default app;
