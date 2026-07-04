@@ -51,10 +51,6 @@ app.get('/api/banners', async (req, res) => {
   } catch { res.status(500).json({ message: 'Server error' }); }
 });
 
-app.get('/api/checkcicd', (_req, res) => {
-  res.json({ message: 'CI/CD pipeline works', timestamp: new Date().toISOString() });
-});
-
 // Connect to DB on module load (Mongoose caches the connection for serverless reuse)
 connectDb();
 
