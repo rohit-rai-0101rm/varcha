@@ -9,32 +9,32 @@ Moving hosting from Vercel/Render to a self-managed AWS EC2 instance. Two phases
 ## Phase 1 — Manual deployment
 
 - [x] Create AWS account, verify identity, set console region to Mumbai (`ap-south-1`)
-- [ ] Launch EC2 instance (t2/t3.micro, Ubuntu 22.04 LTS, free-tier eligible)
-- [ ] Allocate and attach an Elastic IP to the instance (stays free as long as it's attached to a running instance)
-- [ ] SSH into the instance for the first time
-- [ ] Install server software: Node.js, Yarn, PM2, Nginx, Certbot, Git
-- [ ] Clone the Varcha repo onto the server
-- [ ] Install dependencies with `yarn install` at the repo root (single install covers the whole workspace: `shared`, `backend`, `frontend`)
-- [ ] Build in order: `shared` → `backend` → `frontend`
-- [ ] Create the production `.env` file directly on the server (real Mongo URI, JWT secret, Cloudinary keys, Razorpay keys, etc.) — this file is never committed to git
-- [ ] Set up a PM2 ecosystem file to run both the Next.js process and the Express process
-- [ ] Run `pm2 startup` + `pm2 save` so both processes auto-restart if the server reboots
-- [ ] Configure Nginx as a reverse proxy: `varcha.in` → Next.js (port 3000), `varcha.in/api` → Express (port 4000)
-- [ ] Update `varcha.in`'s DNS A record in DomainRacer to point at the Elastic IP
-- [ ] Run Certbot to get a free HTTPS certificate (Let's Encrypt) for `varcha.in`
-- [ ] End-to-end check: homepage loads over HTTPS, PDP loads, admin login works, a sandbox checkout completes
+- [x] Launch EC2 instance (t2/t3.micro, Ubuntu 22.04 LTS, free-tier eligible)
+- [x] Allocate and attach an Elastic IP to the instance (stays free as long as it's attached to a running instance)
+- [x] SSH into the instance for the first time
+- [x] Install server software: Node.js, Yarn, PM2, Nginx, Certbot, Git
+- [x] Clone the Varcha repo onto the server
+- [x] Install dependencies with `yarn install` at the repo root (single install covers the whole workspace: `shared`, `backend`, `frontend`)
+- [x] Build in order: `shared` → `backend` → `frontend`
+- [x] Create the production `.env` file directly on the server (real Mongo URI, JWT secret, Cloudinary keys, Razorpay keys, etc.) — this file is never committed to git
+- [x] Set up a PM2 ecosystem file to run both the Next.js process and the Express process
+- [x] Run `pm2 startup` + `pm2 save` so both processes auto-restart if the server reboots
+- [x] Configure Nginx as a reverse proxy: `varcha.in` → Next.js (port 3000), `varcha.in/api` → Express (port 4000)
+- [x] Update `varcha.in`'s DNS A record (via Cloudflare nameservers) to point at the Elastic IP
+- [x] Run Certbot to get a free HTTPS certificate (Let's Encrypt) for `varcha.in`
+- [x] End-to-end check: homepage loads over HTTPS, PDP loads, admin login works, a sandbox checkout completes
 
 ## Phase 2 — CI/CD (auto-deploy on push to `main`)
 
-- [ ] Generate a dedicated SSH key pair just for deployments (separate from personal key)
-- [ ] Add its public key to the EC2 instance's `~/.ssh/authorized_keys`, ideally under a non-root deploy user
-- [ ] Store the private key + server IP + username as encrypted GitHub Actions Secrets in the repo (Settings → Secrets and variables → Actions) — never committed to code
-- [ ] Write `.github/workflows/deploy.yml` — triggers on every push to `main`:
+- [x] Generate a dedicated SSH key pair just for deployments (separate from personal key)
+- [x] Add its public key to the EC2 instance's `~/.ssh/authorized_keys`
+- [x] Store the private key + server IP + username as encrypted GitHub Actions Secrets in the repo (Settings → Secrets and variables → Actions) — never committed to code
+- [x] Write `.github/workflows/deploy.yml` — triggers on every push to `main`:
   - SSH into the EC2 instance
   - `git pull origin main`
   - `yarn install` + rebuild `shared` → `backend` → `frontend`
   - Restart both PM2 processes (`pm2 restart all` or by name)
-- [ ] Test it: push a trivial change to `main`, confirm GitHub Actions runs and the live site updates automatically
+- [x] Test it: push a trivial change to `main`, confirm GitHub Actions runs and the live site updates automatically
 - [ ] (Later hardening) add a build/typecheck step before deploy so a broken commit can't take the site down; switch to zero-downtime `pm2 reload` instead of `restart`
 
 ---
