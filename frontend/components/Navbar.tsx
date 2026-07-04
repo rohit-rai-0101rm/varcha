@@ -5,6 +5,7 @@ import MobileMenu from './MobileMenu';
 import AuthNav from './AuthNav';
 import CartIcon from './CartIcon';
 import CategoryNavLinks from './CategoryNavLinks';
+import Logo from './Logo';
 
 export default async function Navbar() {
   const categories = await fetchCategories();
@@ -21,11 +22,8 @@ export default async function Navbar() {
       {/* Main nav */}
       <div className="border-b border-line bg-surface/95 backdrop-blur-md">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-6 px-4 sm:px-6 lg:px-8">
-          <Link
-            href="/"
-            className="shrink-0 font-display text-2xl font-bold tracking-tight text-wine"
-          >
-            Varcha
+          <Link href="/" className="shrink-0 text-gold">
+            <Logo className="h-9 w-auto sm:h-10" />
           </Link>
 
           <nav className="hidden flex-1 items-center justify-center gap-8 md:flex">

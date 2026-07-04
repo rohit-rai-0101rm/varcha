@@ -10,6 +10,9 @@ import Product from './models/Product';
 const U = (id: string, w = 1200) =>
   `https://images.unsplash.com/${id}?auto=format&fit=crop&w=${w}&q=85`;
 
+const CLD = (id: string) =>
+  `https://res.cloudinary.com/dotaxtwlh/image/upload/${id}`;
+
 async function seed() {
   const uri = process.env.MONGODB_URI;
   if (!uri) throw new Error('MONGODB_URI not set in .env');
@@ -60,8 +63,8 @@ async function seed() {
       categoryId: necklaces._id,
       price: 2499,
       images: [
-        { url: U('photo-1611652022419-a9419f74343d'), type: 'product-shot' },
-        { url: U('photo-1524504388940-b1c1722653e1', 1800), type: 'model-shot' },
+        { url: CLD('v1782145551/varcha/products/d5ufhac7qnomzmbd8h5c.png'), type: 'product-shot' },
+        { url: CLD('v1782117728/1_zpc4eg.png'), type: 'model-shot' },
       ],
       description:
         'Handcrafted Kundan Polki necklace with 22K gold-plated setting and polki stone accents. A centrepiece for any bridal or festive occasion.',
@@ -70,6 +73,7 @@ async function seed() {
       gender: 'women',
       channel: 'website-exclusive',
       stockQty: 10,
+      isFeatured: true,
     },
     {
       name: 'Meenakari Choker',
@@ -78,7 +82,7 @@ async function seed() {
       price: 1899,
       images: [
         { url: U('photo-1599643478518-a784e5dc4c8f'), type: 'product-shot' },
-        { url: U('photo-1487412720507-e7ab37603c6f', 1800), type: 'model-shot' },
+        { url: CLD('v1782117728/2_t8iq19.png'), type: 'model-shot' },
       ],
       description:
         'Vibrant Meenakari choker with intricate enamel work in peacock motifs. Hand-finished by artisans in Jaipur.',
@@ -87,6 +91,7 @@ async function seed() {
       gender: 'women',
       channel: 'website-exclusive',
       stockQty: 8,
+      isFeatured: true,
     },
     {
       name: 'Kundan Bangle Set (Set of 6)',
@@ -95,7 +100,7 @@ async function seed() {
       price: 2999,
       images: [
         { url: U('photo-1602173574767-37ac01994b2a'), type: 'product-shot' },
-        { url: U('photo-1508214751196-bcfd4ca60f91', 1800), type: 'model-shot' },
+        { url: CLD('v1782117728/3_tliloi.png'), type: 'model-shot' },
       ],
       description:
         'Gold-plated Kundan bangles set with hand-set polki stones. A bridal essential, crafted to be worn as a full set or stacked in pairs.',
@@ -104,6 +109,7 @@ async function seed() {
       gender: 'women',
       channel: 'website-exclusive',
       stockQty: 5,
+      isFeatured: true,
     },
     {
       name: 'Geometric Statement Earrings',

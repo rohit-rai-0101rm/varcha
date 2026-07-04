@@ -34,6 +34,14 @@ Implement as CSS variables (or Tailwind theme extension) with a `data-theme="dar
 
 Dark mode is not an inverted light mode — note `--wine` and `--gold` are *lightened* in dark mode for contrast, not just swapped. Don't auto-generate dark mode from light values; use the table above exactly.
 
+## Logo
+
+- Asset: `frontend/public/brand/varcha-logo.svg` — the V-mark (wire-scroll V holding a diamond) plus the "VARCHA" wordmark, rendered in the gold gradient (`#F3E2B0` → `#D9B36A` → `#9E7328`) on a transparent background. Used as-is in `Navbar` and `Footer`, replacing the old plain-text "Varcha" wordmark.
+- **One asset, both themes.** The gold gradient reads clearly on both `--surface` light (`#FFFCF5`) and `--surface` dark (`#2A2219`) — no theme-conditional swap needed in components.
+- Do **not** use the kit's ink-colored variant (`varcha-navbar-ink.svg` / `varcha-horizontal-elegant-ink-transparent.svg`) — its wordmark color is near-invisible against the dark surface.
+- Do **not** use the kit's `varcha-horizontal-auto-theme.svg` — it switches color via a CSS `prefers-color-scheme` media query, which follows the OS setting, not Varcha's `data-theme` attribute toggle (`ThemeToggle` sets this manually). The two can disagree, showing the wrong-theme colors.
+- Favicon: `frontend/app/icon.svg` (Next.js auto-detected) uses the square icon-only mark (`varcha-icon.svg`) with its baked-in dark-wine background — favicons don't participate in site theming, so a fixed background is correct here, unlike the navbar/footer logo.
+
 ## Signature motif system — tied to `Styles.family`
 
 This is the part that scales. Every Style record already has a `family` field (`indian-craft` / `global-tradition` / `aesthetic` — see SRS Section 6.3). Render one of three small inline SVG marks next to a product's origin label, chosen automatically by that family — never hand-assign a unique icon per style, there are 30+ and growing.
