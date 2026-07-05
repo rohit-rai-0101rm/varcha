@@ -42,8 +42,11 @@ by anything built on the Varcha site. Separate system, separate fix.
   and points to the sitemap. No changes needed.
 - [x] **Canonical URLs** — added to homepage, every PDP, and every PLP via
   `alternates.canonical`.
-- [ ] **Real Lighthouse check** — run against the live `https://varcha.in`,
-  fix anything below the NFR-1 target (80+ mobile). Manual step, not yet run.
+- [x] **Real Lighthouse check** — run against the live `https://varcha.in`:
+  Performance 85, Accessibility 92, Best Practices 96, SEO 100. Clears the
+  NFR-1 target (80+ mobile). Only weak metric is Largest Contentful Paint
+  (4.3s, likely the full-viewport hero carousel image) — optional future
+  polish, not blocking.
 
 ## Phase B — Off-page setup (manual, mostly account work, do after Phase A ships)
 
