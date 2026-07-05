@@ -19,30 +19,31 @@ by anything built on the Varcha site. Separate system, separate fix.
 
 ## Phase A — Technical SEO (code changes, do first)
 
-- [ ] **Per-page metadata** — add `generateMetadata()` so each page has a
-  unique, specific title/description instead of inheriting the homepage
-  default from `layout.tsx`:
+- [x] **Per-page metadata** — `generateMetadata()` on PDP/PLP/search, each
+  with a unique title/description instead of inheriting the homepage default:
   - `/product/[slug]` — title = product name + "Varcha", description = product
-    description, OG image = product's model-shot
+    description, OG image = product's model-shot, canonical URL
   - `/category/[slug]` — title = category name, description mentions
-    styles/occasions
-  - `/search` — dynamic title based on the query
-- [ ] **Structured data (JSON-LD)** — invisible `<script type="application/ld+json">`
-  blocks so Google can show rich results (price, image, rating):
+    styles/occasions, OG image = category image, canonical URL
+  - `/search` — dynamic title based on the query (still `noindex`)
+- [x] **Structured data (JSON-LD)** — added:
   - `Product` schema on every PDP (name, image, price, availability, brand)
-  - `BreadcrumbList` schema on PDP/PLP (Home → Category → Product)
-  - `Organization` schema on the homepage (name, logo, social links, contact)
-- [ ] **Image alt text audit** — `ProductCard`, PDP gallery, hero carousel all
-  need descriptive `alt` text (e.g. "Kundan Polki Necklace — bridal gold
-  necklace"), not blank or generic. Drives Google Image search traffic.
-- [ ] **Sitemap + robots check** — `sitemap.ts` and `robots.txt` already exist;
-  verify the live sitemap lists every product/category URL correctly on the
-  real domain, and robots.txt isn't accidentally blocking anything.
-- [ ] **Canonical URLs** — prevent duplicate-content penalties from
-  filter/query-param variations of the same PLP.
+  - `BreadcrumbList` schema on PDP (Home → Category → Product) and PLP
+    (Home → Category)
+  - `Organization` schema on the homepage (name, logo, contact email)
+- [x] **Image alt text audit** — `ProductCard` and `FeaturedStrip` now include
+  the style name in alt text when available (e.g. "Kundan Polki Necklace —
+  Kundan style"); PDP gallery already had descriptive alt text. Hero carousel
+  images are decorative background banners with no per-slide caption data in
+  the schema — left as generic alt text, low SEO value either way.
+- [x] **Sitemap + robots check** — both already correct: sitemap includes
+  homepage, all static pages, active categories and products with sensible
+  priorities; robots.txt disallows admin/checkout/cart/account/search/auth
+  and points to the sitemap. No changes needed.
+- [x] **Canonical URLs** — added to homepage, every PDP, and every PLP via
+  `alternates.canonical`.
 - [ ] **Real Lighthouse check** — run against the live `https://varcha.in`,
-  fix anything below the NFR-1 target (80+ mobile). Page speed is a direct
-  ranking factor.
+  fix anything below the NFR-1 target (80+ mobile). Manual step, not yet run.
 
 ## Phase B — Off-page setup (manual, mostly account work, do after Phase A ships)
 

@@ -15,9 +15,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const category = await fetchCategoryBySlug(slug);
   if (!category) return { title: 'Category — Varcha' };
+  const description = `Shop ${category.name} — handcrafted artificial jewellery from Varcha. Browse our curated collection.`;
   return {
     title: `${category.name} — Varcha`,
-    description: `Shop ${category.name} — handcrafted artificial jewellery from Varcha. Browse our curated collection.`,
+    description,
+    alternates: { canonical: `/category/${category.slug}` },
+    openGraph: {
+      title: `${category.name} — Varcha`,
+      description,
+      images: category.image ? [{ url: category.image }] : undefined,
+    },
   };
 }
 
@@ -44,8 +51,27 @@ export default async function CategoryPage({ params, searchParams }: Props) {
 
   if (!category) notFound();
 
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://varcha.in';
+  const breadcrumbJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: siteUrl },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: category.name,
+        item: `${siteUrl}/category/${category.slug}`,
+      },
+    ],
+  };
+
   return (
     <div className="min-h-screen bg-bg">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
       <PageTracker categoryId={category._id} />
       <div className="mx-auto max-w-6xl px-4 py-8">
         {/* Header */}

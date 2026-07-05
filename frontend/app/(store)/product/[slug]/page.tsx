@@ -17,9 +17,19 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const product = await fetchProductBySlug(slug);
   if (!product) return { title: 'Product not found — Varcha' };
+  const description = product.description ?? `Shop ${product.name} on Varcha.`;
+  const ogImage =
+    product.images.find((i) => i.type === 'model-shot')?.url ??
+    product.images.find((i) => i.type === 'product-shot')?.url;
   return {
     title: `${product.name} — Varcha`,
-    description: product.description ?? `Shop ${product.name} on Varcha.`,
+    description,
+    alternates: { canonical: `/product/${product.slug}` },
+    openGraph: {
+      title: `${product.name} — Varcha`,
+      description,
+      images: ogImage ? [{ url: ogImage }] : undefined,
+    },
   };
 }
 
@@ -37,8 +47,52 @@ export default async function ProductPage({ params }: Props) {
   const category =
     typeof product.categoryId === 'object' ? product.categoryId : null;
 
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://varcha.in';
+  const productJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: product.name,
+    description: product.description,
+    image: allImages.map((img) => img.url),
+    sku: product._id,
+    brand: { '@type': 'Brand', name: 'Varcha' },
+    offers: {
+      '@type': 'Offer',
+      url: `${siteUrl}/product/${product.slug}`,
+      priceCurrency: 'INR',
+      price: product.price,
+      availability:
+        product.channel === 'website-exclusive' && (product.stockQty ?? 0) <= 0
+          ? 'https://schema.org/OutOfStock'
+          : 'https://schema.org/InStock',
+    },
+  };
+  const breadcrumbItems = [
+    { name: 'Home', url: siteUrl },
+    ...(category ? [{ name: category.name, url: `${siteUrl}/category/${category.slug}` }] : []),
+    { name: product.name, url: `${siteUrl}/product/${product.slug}` },
+  ];
+  const breadcrumbJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: breadcrumbItems.map((item, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: item.name,
+      item: item.url,
+    })),
+  };
+
   return (
     <div className="min-h-screen bg-bg">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
       <PageTracker productId={product._id} />
       <div className="mx-auto max-w-6xl px-4 py-8 lg:px-8">
         {/* Breadcrumb */}

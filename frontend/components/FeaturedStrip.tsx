@@ -20,7 +20,7 @@ function OverlayCard({ product: p }: { product: ApiProduct }) {
       {useImg ? (
         <Image
           src={img!}
-          alt={p.name}
+          alt={p.styleIds[0] ? `${p.name} — ${p.styleIds[0].name} style` : p.name}
           fill
           sizes="(max-width: 640px) 72vw, (max-width: 1024px) 40vw, 25vw"
           className="object-cover object-center transition-transform duration-700 ease-out group-hover:scale-[1.05]"

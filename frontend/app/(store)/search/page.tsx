@@ -4,14 +4,18 @@ import ProductCard from '@/components/ProductCard';
 import SearchBar from '@/components/SearchBar';
 import PageTracker from '@/components/PageTracker';
 
-export const metadata: Metadata = {
-  title: 'Search — Varcha',
-  description: 'Search Varcha for handcrafted artificial jewellery by name, category, or style.',
-  robots: { index: false },
-};
-
 interface Props {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
+}
+
+export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
+  const sp = await searchParams;
+  const q = Array.isArray(sp.q) ? sp.q[0] : sp.q;
+  return {
+    title: q ? `"${q}" — Search — Varcha` : 'Search — Varcha',
+    description: 'Search Varcha for handcrafted artificial jewellery by name, category, or style.',
+    robots: { index: false },
+  };
 }
 
 export default async function SearchPage({ searchParams }: Props) {

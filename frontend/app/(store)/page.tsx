@@ -7,6 +7,7 @@ export const metadata: Metadata = {
   title: 'Varcha — Curated Artificial Jewellery',
   description:
     'Handcrafted artificial jewellery rooted in Indian craft traditions. Premium bridal and everyday pieces — shop the exclusive line or browse our Amazon and Flipkart collections.',
+  alternates: { canonical: '/' },
 };
 import HeroCarousel from '@/components/HeroCarousel';
 import CategoryCard from '@/components/CategoryCard';
@@ -28,8 +29,22 @@ export default async function Home() {
     .filter((p) => p.channel === 'website-exclusive' && p.images.length > 0)
     .slice(0, 4);
 
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://varcha.in';
+  const organizationJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: 'Varcha',
+    url: siteUrl,
+    logo: `${siteUrl}/brand/varcha-logo.svg`,
+    ...(settings?.contactEmail ? { email: settings.contactEmail } : {}),
+  };
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+      />
       <PageTracker />
       {/* ── HERO CAROUSEL ─────────────────────────── */}
       <HeroCarousel
