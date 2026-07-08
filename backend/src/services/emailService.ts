@@ -10,6 +10,7 @@ interface OrderEmailData {
   items: { name: string; qty: number; price: number }[];
   totalAmount: number;
   shippingAddress: { line1: string; line2?: string; city: string; state: string; pincode: string };
+  replyTo?: string;
 }
 
 export async function sendOrderConfirmation(data: OrderEmailData) {
@@ -40,7 +41,14 @@ export async function sendOrderConfirmation(data: OrderEmailData) {
   }
 
   try {
-    await resend.emails.send({ from: FROM, to: data.to, subject: `Order confirmed — Varcha #${data.orderId.slice(-8)}`, html });
+    const { error } = await resend.emails.send({
+      from: FROM,
+      to: data.to,
+      replyTo: data.replyTo,
+      subject: `Order confirmed — Varcha #${data.orderId.slice(-8)}`,
+      html,
+    });
+    if (error) console.error('[emailService] Resend rejected confirmation email:', error);
   } catch (err) {
     // Email failure must never break the order flow — log and continue
     console.error('[emailService] Failed to send confirmation email:', err);
@@ -84,7 +92,13 @@ export async function sendAdminOrderAlert(data: AdminOrderAlertData) {
   }
 
   try {
-    await resend.emails.send({ from: FROM, to: data.to, subject: `New order — Varcha #${data.orderId.slice(-8)}`, html });
+    const { error } = await resend.emails.send({
+      from: FROM,
+      to: data.to,
+      subject: `New order — Varcha #${data.orderId.slice(-8)}`,
+      html,
+    });
+    if (error) console.error('[emailService] Resend rejected admin alert email:', error);
   } catch (err) {
     // Email failure must never break the order flow — log and continue
     console.error('[emailService] Failed to send admin alert email:', err);

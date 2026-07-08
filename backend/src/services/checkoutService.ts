@@ -153,7 +153,7 @@ export async function verifyAndFulfill(opts: {
     session.endSession();
   }
 
-  // 5. Send confirmation email (non-blocking — failure never breaks the order)
+  // 5. Send confirmation + admin alert emails (non-blocking — failure never breaks the order)
   const toEmail = opts.userId
     ? (await User.findById(opts.userId))?.email ?? opts.contact.email
     : opts.contact.email;
@@ -163,28 +163,30 @@ export async function verifyAndFulfill(opts: {
     return { name: product.name, qty: item.qty, price: product.price };
   });
 
-  sendOrderConfirmation({
-    to: toEmail,
-    name: opts.contact.name,
-    orderId: order!._id.toString(),
-    items: emailItems,
-    totalAmount,
-    shippingAddress: opts.shippingAddress,
-  }).catch(() => {});
-
-  // 6. Alert admin of the new order (non-blocking — failure never breaks the order)
   Settings.findById('site-settings')
-    .then((settings) =>
+    .then((settings) => {
+      const adminEmail = settings?.contactEmail ?? '';
+
+      sendOrderConfirmation({
+        to: toEmail,
+        name: opts.contact.name,
+        orderId: order!._id.toString(),
+        items: emailItems,
+        totalAmount,
+        shippingAddress: opts.shippingAddress,
+        replyTo: adminEmail || undefined,
+      }).catch(() => {});
+
       sendAdminOrderAlert({
-        to: settings?.contactEmail ?? '',
+        to: adminEmail,
         buyerName: opts.contact.name,
         buyerPhone: opts.contact.phone,
         orderId: order!._id.toString(),
         items: emailItems,
         totalAmount,
         shippingAddress: opts.shippingAddress,
-      }),
-    )
+      }).catch(() => {});
+    })
     .catch(() => {});
 
   return order!;
