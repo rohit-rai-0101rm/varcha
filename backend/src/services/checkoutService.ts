@@ -5,7 +5,8 @@ import Product from '../models/Product';
 import Order, { IOrder } from '../models/Order';
 import Payment from '../models/Payment';
 import User from '../models/User';
-import { sendOrderConfirmation } from './emailService';
+import Settings from '../models/Settings';
+import { sendOrderConfirmation, sendAdminOrderAlert } from './emailService';
 
 const razorpay = new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID ?? '',
@@ -170,6 +171,21 @@ export async function verifyAndFulfill(opts: {
     totalAmount,
     shippingAddress: opts.shippingAddress,
   }).catch(() => {});
+
+  // 6. Alert admin of the new order (non-blocking — failure never breaks the order)
+  Settings.findById('site-settings')
+    .then((settings) =>
+      sendAdminOrderAlert({
+        to: settings?.contactEmail ?? '',
+        buyerName: opts.contact.name,
+        buyerPhone: opts.contact.phone,
+        orderId: order!._id.toString(),
+        items: emailItems,
+        totalAmount,
+        shippingAddress: opts.shippingAddress,
+      }),
+    )
+    .catch(() => {});
 
   return order!;
 }

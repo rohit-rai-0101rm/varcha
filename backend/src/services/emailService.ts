@@ -46,3 +46,47 @@ export async function sendOrderConfirmation(data: OrderEmailData) {
     console.error('[emailService] Failed to send confirmation email:', err);
   }
 }
+
+interface AdminOrderAlertData {
+  to: string;
+  buyerName: string;
+  buyerPhone: string;
+  orderId: string;
+  items: { name: string; qty: number; price: number }[];
+  totalAmount: number;
+  shippingAddress: { line1: string; line2?: string; city: string; state: string; pincode: string };
+}
+
+export async function sendAdminOrderAlert(data: AdminOrderAlertData) {
+  if (!data.to) return; // no admin contact email configured yet
+
+  const itemRows = data.items
+    .map((i) => `<tr><td>${i.name}</td><td>×${i.qty}</td><td>₹${i.price.toLocaleString('en-IN')}</td></tr>`)
+    .join('');
+
+  const html = `
+    <h2>New order — Varcha #${data.orderId.slice(-8)}</h2>
+    <p><strong>Buyer:</strong> ${data.buyerName} (${data.buyerPhone})</p>
+    <table border="1" cellpadding="6" cellspacing="0">
+      <thead><tr><th>Item</th><th>Qty</th><th>Price</th></tr></thead>
+      <tbody>${itemRows}</tbody>
+    </table>
+    <p><strong>Total: ₹${data.totalAmount.toLocaleString('en-IN')}</strong></p>
+    <p><strong>Shipping to:</strong><br>
+      ${data.shippingAddress.line1}${data.shippingAddress.line2 ? ', ' + data.shippingAddress.line2 : ''}<br>
+      ${data.shippingAddress.city}, ${data.shippingAddress.state} — ${data.shippingAddress.pincode}
+    </p>
+  `;
+
+  if (!resend) {
+    console.log('[emailService] No RESEND_API_KEY set — would have alerted admin:', { to: data.to, orderId: data.orderId });
+    return;
+  }
+
+  try {
+    await resend.emails.send({ from: FROM, to: data.to, subject: `New order — Varcha #${data.orderId.slice(-8)}`, html });
+  } catch (err) {
+    // Email failure must never break the order flow — log and continue
+    console.error('[emailService] Failed to send admin alert email:', err);
+  }
+}

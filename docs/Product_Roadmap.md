@@ -12,7 +12,7 @@ These are not features. Fix these before building anything else.
 |---|---|---|---|
 | 1 | **Razorpay KYC** — PAN, bank account, business registration | Client | Zero revenue possible until this is done |
 | 2 | **Real product catalog** — 9 demo products with fake photos and placeholder Amazon links | Client + Developer | Site works but sells nothing real |
-| 3 | **Order notifications** — no email to admin or customer when an order is placed | Developer | Client won't know a payment came in |
+| 3 | ~~**Order notifications**~~ — done 2026-07-05, admin + customer emails now fire on every paid order | Developer | Resolved |
 
 ---
 
@@ -23,10 +23,10 @@ These are not features. Fix these before building anything else.
 
 ### Features
 
-- **Admin order alert email** — the moment a customer pays, client gets an email: buyer name, items ordered, amount, shipping address
-- **Customer order confirmation email** — professional confirmation with order ID and summary (Resend or Nodemailer)
-- **Transactional SMS** — order placed + order shipped notifications via Twilio or MSG91 (low cost, high trust signal)
-- **Real product upload session** — sit with the client, upload their actual jewelry inventory: real photos, real descriptions, real Amazon/Flipkart URLs
+- [x] **Admin order alert email** — the moment a customer pays, client gets an email (via Resend): buyer name, phone, items ordered, amount, shipping address. Sent to whatever `contactEmail` is set in Admin → Settings.
+- [x] **Customer order confirmation email** — professional confirmation with order ID and summary (Resend), already wired into the checkout flow
+- **Transactional SMS** — skipped for now (2026-07-05 decision). DLT registration + per-SMS cost apply regardless of provider (Twilio/MSG91); WhatsApp's existing wa.me button (FR-28) covers the "instant notification" feel for free. Revisit only if the client specifically wants real SMS and accepts the ongoing per-message cost.
+- [ ] **Real product upload session** — sit with the client, upload their actual jewelry inventory: real photos, real descriptions, real Amazon/Flipkart URLs
 
 ### Test gate for Phase 2
 Place one real paid order (after KYC). Confirm: admin gets the email within 60 seconds, customer gets confirmation, order appears in admin panel with correct status.
@@ -69,7 +69,7 @@ Create a shipment for a test order from the admin panel. Confirm label downloads
 
 | Phase | Scope | Suggested Charge |
 |---|---|---|
-| Phase 2 | Revenue ready (emails, SMS, real catalog) | ₹8,000–12,000 |
+| Phase 2 | Revenue ready (emails, real catalog) | ₹8,000–12,000 |
 | Phase 3 | Operations (shipping, coupons, stock alerts) | ₹10,000–15,000 |
 | Phase 4 | Growth (WhatsApp, reviews, loyalty) | Quote after Phase 3 — scope depends on analytics |
 
