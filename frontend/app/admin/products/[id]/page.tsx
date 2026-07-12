@@ -11,7 +11,7 @@ import {
 } from '@/lib/admin-api';
 import ImageUploader from '@/components/admin/ImageUploader';
 
-interface Category { _id: string; name: string }
+interface Category { _id: string; name: string; parentCategory?: { _id: string; name: string } | null }
 interface Style { _id: string; name: string; family: string }
 
 const OCCASIONS = ['daily', 'party', 'festive', 'bridal', 'anniversary', 'formal', 'gen-z'];
@@ -119,6 +119,14 @@ export default function ProductFormPage({ params }: { params: Promise<{ id: stri
     return acc;
   }, {});
 
+  // Indent subcategories under their parent so the hierarchy is visible
+  // while picking a category, instead of one flat alphabetical list.
+  const topLevelCategories = categories.filter((c) => !c.parentCategory);
+  const orderedCategories = topLevelCategories.flatMap((top) => [
+    top,
+    ...categories.filter((c) => c.parentCategory?._id === top._id),
+  ]);
+
   return (
     <div className="max-w-2xl">
       <h1 className="mb-6 font-display text-2xl font-semibold text-ink">
@@ -150,7 +158,11 @@ export default function ProductFormPage({ params }: { params: Promise<{ id: stri
           <label className={LABEL}>Category (FR-30: dropdown only)</label>
           <select className={INPUT} value={categoryId} onChange={(e) => setCategoryId(e.target.value)}>
             <option value="">— select —</option>
-            {categories.map((c) => <option key={c._id} value={c._id}>{c.name}</option>)}
+            {orderedCategories.map((c) => (
+              <option key={c._id} value={c._id}>
+                {c.parentCategory ? `    — ${c.name}` : c.name}
+              </option>
+            ))}
           </select>
         </div>
 

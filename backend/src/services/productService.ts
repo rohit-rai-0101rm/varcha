@@ -18,9 +18,27 @@ export async function listProducts(filters: ProductFilters) {
   const query: Record<string, any> = { isActive: true };
 
   if (filters.category) {
-    const cat = await Category.findOne({ slug: filters.category, isActive: true }, '_id').lean();
-    if (!cat) return [];
-    query.categoryId = cat._id;
+    // Browsing a category (e.g. "Jewellery") should also surface products
+    // filed under any of its descendant subcategories, at any nesting
+    // depth — not just products assigned directly to it. $graphLookup
+    // walks the whole descendant tree server-side in one round trip
+    // (using the parentCategory index), rather than one query per level.
+    const [result] = await Category.aggregate([
+      { $match: { slug: filters.category, isActive: true } },
+      {
+        $graphLookup: {
+          from: 'categories',
+          startWith: '$_id',
+          connectFromField: '_id',
+          connectToField: 'parentCategory',
+          as: 'descendants',
+          restrictSearchWithMatch: { isActive: true },
+        },
+      },
+      { $project: { descendantIds: '$descendants._id' } },
+    ]);
+    if (!result) return [];
+    query.categoryId = { $in: [result._id, ...result.descendantIds] };
   }
 
   if (filters.style) {

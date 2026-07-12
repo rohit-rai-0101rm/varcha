@@ -1,12 +1,8 @@
 import Link from 'next/link';
 import Logo from './Logo';
+import { fetchCategories } from '@/lib/api';
 
-const links = {
-  Collections: [
-    { label: 'Necklaces', href: '/category/necklaces' },
-    { label: 'Bangles', href: '/category/bangles' },
-    { label: 'Earrings', href: '/category/earrings' },
-  ],
+const staticLinks = {
   Discover: [
     { label: 'About Varcha', href: '/about' },
     { label: 'Jewellery Care Guide', href: '/care-guide' },
@@ -21,7 +17,22 @@ const links = {
   ],
 };
 
-export default function Footer() {
+export default async function Footer() {
+  const allCategories = await fetchCategories();
+  const visible = allCategories.filter((c) => c.showInNav !== false);
+  const topLevel = visible.filter((c) => !c.parentCategory);
+  // Flat list, ordered so each subcategory appears right after its parent
+  const collectionLinks = topLevel.flatMap((top) => [
+    { label: top.name, href: `/category/${top.slug}` },
+    ...visible
+      .filter((c) => c.parentCategory === top._id)
+      .map((child) => ({ label: `— ${child.name}`, href: `/category/${child.slug}` })),
+  ]);
+  const links = {
+    Collections: collectionLinks,
+    ...staticLinks,
+  };
+
   return (
     <footer className="border-t border-line bg-surface">
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">

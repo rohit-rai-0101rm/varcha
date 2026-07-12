@@ -7,12 +7,15 @@ import {
   adminApiUpdateCategory,
   adminApiDeleteCategory,
 } from '@/lib/admin-api';
+import ImageUploader from '@/components/admin/ImageUploader';
 
 interface Category {
   _id: string;
   name: string;
   slug: string;
   isActive: boolean;
+  showInNav: boolean;
+  image?: string;
   parentCategory?: { _id: string; name: string } | null;
 }
 
@@ -31,6 +34,8 @@ export default function AdminCategoriesPage() {
   const [slug, setSlug] = useState('');
   const [parentId, setParentId] = useState('');
   const [isActive, setIsActive] = useState(true);
+  const [showInNav, setShowInNav] = useState(true);
+  const [image, setImage] = useState('');
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
 
@@ -44,7 +49,7 @@ export default function AdminCategoriesPage() {
 
   function startNew() {
     setEditing(null);
-    setName(''); setSlug(''); setParentId(''); setIsActive(true); setError('');
+    setName(''); setSlug(''); setParentId(''); setIsActive(true); setShowInNav(true); setImage(''); setError('');
   }
 
   function startEdit(c: Category) {
@@ -53,13 +58,15 @@ export default function AdminCategoriesPage() {
     setSlug(c.slug);
     setParentId(c.parentCategory?._id ?? '');
     setIsActive(c.isActive);
+    setShowInNav(c.showInNav !== false);
+    setImage(c.image ?? '');
     setError('');
   }
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     setSaving(true); setError('');
-    const payload = { name, slug: slug || slugify(name), parentCategory: parentId || null, isActive };
+    const payload = { name, slug: slug || slugify(name), parentCategory: parentId || null, isActive, showInNav, image };
     try {
       if (editing) await adminApiUpdateCategory(editing._id, payload);
       else await adminApiCreateCategory(payload);
@@ -112,11 +119,18 @@ export default function AdminCategoriesPage() {
               ))}
             </select>
           </div>
-          <div className="flex items-end pb-1">
+          <div className="flex items-end gap-5 pb-1">
             <label className="flex cursor-pointer items-center gap-2 font-body text-sm text-ink">
               <input type="checkbox" checked={isActive} onChange={(e) => setIsActive(e.target.checked)} />
               Active
             </label>
+            <label className="flex cursor-pointer items-center gap-2 font-body text-sm text-ink">
+              <input type="checkbox" checked={showInNav} onChange={(e) => setShowInNav(e.target.checked)} />
+              Show in nav/footer
+            </label>
+          </div>
+          <div className="col-span-2">
+            <ImageUploader value={image} onChange={setImage} folder="categories" label="Thumbnail image" />
           </div>
           <div className="col-span-2 flex gap-3">
             <button type="submit" disabled={saving} className="rounded-btn bg-wine px-5 py-2 font-body text-sm text-surface disabled:opacity-60">
@@ -138,7 +152,7 @@ export default function AdminCategoriesPage() {
           <table className="w-full font-body text-sm">
             <thead className="bg-surface text-left">
               <tr>
-                {['Name', 'Slug', 'Parent', 'Active', ''].map((h) => (
+                {['Name', 'Slug', 'Parent', 'Active', 'Nav', ''].map((h) => (
                   <th key={h} className="border-b border-line px-4 py-3 font-medium text-ink-soft">{h}</th>
                 ))}
               </tr>
@@ -151,6 +165,9 @@ export default function AdminCategoriesPage() {
                   <td className="px-4 py-3 text-ink-soft">{c.parentCategory?.name ?? '—'}</td>
                   <td className="px-4 py-3">
                     <span className={c.isActive ? 'text-green-600' : 'text-ink-soft'}>{c.isActive ? 'Yes' : 'No'}</span>
+                  </td>
+                  <td className="px-4 py-3">
+                    <span className={c.showInNav !== false ? 'text-green-600' : 'text-ink-soft'}>{c.showInNav !== false ? 'Yes' : 'Hidden'}</span>
                   </td>
                   <td className="px-4 py-3">
                     <div className="flex gap-3">

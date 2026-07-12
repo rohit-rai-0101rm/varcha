@@ -56,6 +56,9 @@ router.get('/customers/:userId', requireAdmin, ctrl.getCustomerDetail);
 // Leads (pre-launch "Notify Me" signups)
 router.get('/leads', requireAdmin, ctrl.listLeads);
 
+// Custom order requests
+router.get('/custom-orders', requireAdmin, ctrl.listCustomOrders);
+
 // Image upload → Cloudinary
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 router.post('/upload', requireAdmin, upload.single('file') as any, ctrl.uploadImage);

@@ -138,13 +138,23 @@ panels — overlapping the divider on desktop, stacked centered on mobile.
 
 1. Confirm the one remaining open item in §3 (Styles wipe) with client.
 2. Restructure categories (Stone / Jewellery parents, re-parent existing
-   categories) — data change, no schema change.
+   categories) — data change, no schema change. **Done in the local
+   `varcha_dev` test DB** (Stone, Jewellery, and Polki/Navratan/Chocker
+   re-parented under Jewellery). Not yet applied to production.
 3. Add `Rashi` type + `Product.rashi` field (shared type, backend model,
-   admin form, PLP filter).
+   admin form, PLP filter). Not yet started.
 4. Clear dummy Categories/Products (and Styles, pending confirmation) —
    banners untouched.
-5. Build the custom-order modal + backend + admin list page.
-6. Build the homepage Stone/Jewellery section + rotating medallion badge.
+5. **Done** — custom-order modal (`CustomOrderTrigger` + shadcn/Radix
+   `Dialog`), backend (`CustomOrderRequest` model/service/controller,
+   public `POST /api/custom-orders` + `POST /api/custom-orders/upload`),
+   and admin list page (`/admin/custom-orders`). Follows the same
+   no-auto-notification pattern as `/admin/leads` per the open item in §3.
+6. **Done** — homepage Stone/Jewellery section (`StoneJewellerySection`)
+   with the rotating medallion badge (`RotatingMedallion` + `LogoMark`,
+   CSS `spin` animation, SVG `textPath` ring). Gated on `Stone` and
+   `Jewellery` categories existing by slug, so it stays invisible on any
+   environment (like production) until step 2 actually ships there.
 7. Update `docs/SRS.md` with the new FR + schema entries (per the
    documentation sync rule) once this actually ships — not before, since
    the spec should reflect what's built, not what's still being designed.

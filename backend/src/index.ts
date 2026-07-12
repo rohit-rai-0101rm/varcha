@@ -15,6 +15,7 @@ import wishlistRouter from './routes/wishlist';
 import checkoutRouter from './routes/checkout';
 import ordersRouter from './routes/orders';
 import leadsRouter from './routes/leads';
+import customOrdersRouter from './routes/customOrders';
 import adminRouter from './routes/admin';
 import { getSettings } from './services/adminService';
 import Banner from './models/Banner';
@@ -38,6 +39,7 @@ app.use('/api/wishlist', wishlistRouter);
 app.use('/api/checkout', checkoutRouter);
 app.use('/api/orders', ordersRouter);
 app.use('/api/leads', leadsRouter);
+app.use('/api/custom-orders', customOrdersRouter);
 app.use('/api/admin', adminRouter);
 app.get('/api/settings', async (_req, res) => {
   try { res.json(await getSettings()); } catch { res.status(500).json({ message: 'Server error' }); }

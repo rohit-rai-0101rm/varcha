@@ -16,6 +16,7 @@ export interface ApiCategory {
   parentCategory?: string;
   image?: string;
   isActive: boolean;
+  showInNav?: boolean;
 }
 
 export interface ApiProduct {

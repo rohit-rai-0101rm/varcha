@@ -8,6 +8,7 @@ import Banner from '../models/Banner';
 import Order from '../models/Order';
 import Settings from '../models/Settings';
 import Lead from '../models/Lead';
+import CustomOrderRequest from '../models/CustomOrderRequest';
 
 function slugify(text: string): string {
   return (text ?? '').toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
@@ -175,4 +176,10 @@ export async function updateSettings(data: Partial<{
 
 export async function adminListLeads() {
   return Lead.find().sort({ createdAt: -1 }).lean();
+}
+
+// ── Custom order requests ────────────────────────────────────────────────────
+
+export async function adminListCustomOrders() {
+  return CustomOrderRequest.find().sort({ createdAt: -1 }).lean();
 }

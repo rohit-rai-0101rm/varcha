@@ -209,3 +209,34 @@ export async function apiCreateLead(body: {
   if (!res.ok) throw new Error(data.message ?? 'Something went wrong — please try again');
   return data;
 }
+
+// ── Custom order requests ───────────────────────────────────────────────────
+
+export async function apiCreateCustomOrderRequest(body: {
+  name: string;
+  phone: string;
+  email?: string;
+  occasion?: string;
+  budgetRange?: string;
+  preferredStone?: string;
+  referenceImageUrl?: string;
+  message?: string;
+}) {
+  const res = await fetch(`${API}/api/custom-orders`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message ?? 'Something went wrong — please try again');
+  return data;
+}
+
+export async function apiUploadCustomOrderImage(file: File): Promise<string> {
+  const formData = new FormData();
+  formData.append('file', file);
+  const res = await fetch(`${API}/api/custom-orders/upload`, { method: 'POST', body: formData });
+  const json = await res.json();
+  if (!res.ok) throw new Error(json.message ?? 'Upload failed');
+  return json.url as string;
+}

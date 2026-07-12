@@ -273,3 +273,11 @@ export async function adminApiListLeads() {
   if (!res.ok) return [];
   return res.json();
 }
+
+// ── Custom order requests ────────────────────────────────────────────────────
+
+export async function adminApiListCustomOrders() {
+  const res = await fetch(`${API}/api/admin/custom-orders`, { headers: adminHeaders() });
+  if (!res.ok) return [];
+  return res.json();
+}

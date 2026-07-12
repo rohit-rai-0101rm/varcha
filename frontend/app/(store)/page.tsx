@@ -10,19 +10,23 @@ export const metadata: Metadata = {
   alternates: { canonical: '/' },
 };
 import HeroCarousel from '@/components/HeroCarousel';
-import CategoryCard from '@/components/CategoryCard';
+import CategorySlider from '@/components/CategorySlider';
 import FeaturedStrip from '@/components/FeaturedStrip';
 import ComingSoonHero from '@/components/ComingSoonHero';
+import StoneJewellerySection from '@/components/StoneJewellerySection';
 import PageTracker from '@/components/PageTracker';
 
 export default async function Home() {
-  const [categories, products, featuredProducts, settings, heroBanners] = await Promise.all([
+  const [allCategories, products, featuredProducts, settings, heroBanners] = await Promise.all([
     fetchCategories(),
     fetchProducts(),
     fetchProducts({ featured: 'true' }),
     fetchSettings(),
     fetchBanners('home-hero'),
   ]);
+  const categories = allCategories.filter((c) => c.showInNav !== false);
+  const stoneCategory = allCategories.find((c) => c.slug === 'stone');
+  const jewelleryCategory = allCategories.find((c) => c.slug === 'jewellery');
 
   const activeBanners = settings?.homeBannerEnabled ? heroBanners : [];
 
@@ -58,6 +62,11 @@ export default async function Home() {
         firstCategory={categories[0]}
       />
 
+      {/* ── STONE & JEWELLERY ─────────────────────── */}
+      {stoneCategory && jewelleryCategory && (
+        <StoneJewellerySection stone={stoneCategory} jewellery={jewelleryCategory} />
+      )}
+
       {/* ── COMING SOON ───────────────────────────── */}
       <ComingSoonHero imageUrl={comingSoonImage} discountText={settings?.firstOrderDiscountText} />
 
@@ -87,12 +96,10 @@ export default async function Home() {
               </Link>
             </div>
 
-            {/* Equal-height portrait grid */}
-            <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
-              {categories.map((cat) => (
-                <CategoryCard key={cat._id} cat={cat} />
-              ))}
-            </div>
+            {/* Horizontal slider — count varies with what admin has toggled
+                visible (top-level categories and/or subcategories), so a
+                scrollable row handles growth better than a wrapping grid */}
+            <CategorySlider categories={categories} />
 
             {/* Mobile view all */}
             <div className="mt-6 sm:hidden">

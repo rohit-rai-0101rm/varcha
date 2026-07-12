@@ -12,7 +12,7 @@ export default function CategoryCard({ cat }: { cat: ApiCategory }) {
   return (
     <Link
       href={`/category/${cat.slug}`}
-      className="group relative aspect-[3/4] overflow-hidden rounded-card"
+      className="group relative block aspect-[3/4] w-full overflow-hidden rounded-card"
     >
       {useImage ? (
         <Image

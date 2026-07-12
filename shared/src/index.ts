@@ -66,6 +66,7 @@ export interface Category {
   parentCategory?: string; // ObjectId ref — nullable for top-level categories
   image?: string;
   isActive: boolean;
+  showInNav: boolean; // default true; lets admin hide a category from the nav/footer without deactivating it
 }
 
 export interface Style {
@@ -215,5 +216,18 @@ export interface Lead {
   phone: string;
   email?: string;
   cartItems?: LeadCartItem[]; // what was in their cart when they signed up, if anything
+  createdAt: Date;
+}
+
+export interface CustomOrderRequest {
+  _id: string;
+  name: string;
+  phone: string;
+  email?: string;
+  occasion?: string;
+  budgetRange?: string;
+  preferredStone?: string;
+  referenceImageUrl?: string;
+  message?: string;
   createdAt: Date;
 }

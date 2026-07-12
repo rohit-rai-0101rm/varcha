@@ -3,14 +3,15 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { apiLogEvent } from '@/lib/client-api';
-import type { ApiCategory } from '@/lib/api';
+import type { CategoryNode } from './CategoryNavLinks';
 
 interface Props {
-  categories: ApiCategory[];
+  tree: CategoryNode[];
 }
 
-export default function MobileMenu({ categories }: Props) {
+export default function MobileMenu({ tree }: Props) {
   const [open, setOpen] = useState(false);
+  const [expanded, setExpanded] = useState<string | null>(null);
 
   return (
     <div className="relative md:hidden">
@@ -55,15 +56,42 @@ export default function MobileMenu({ categories }: Props) {
       {open && (
         <div className="absolute right-0 top-full z-50 mt-2 w-56 rounded-panel border border-line bg-surface shadow-lg">
           <nav className="flex flex-col p-2">
-            {categories.map((cat) => (
-              <Link
-                key={cat._id}
-                href={`/category/${cat.slug}`}
-                onClick={() => { setOpen(false); apiLogEvent({ type: 'click', categoryId: cat._id }); }}
-                className="rounded-btn px-4 py-2.5 font-body text-sm font-medium text-ink-soft transition-colors hover:bg-bg hover:text-wine"
-              >
-                {cat.name}
-              </Link>
+            {tree.map(({ category, children }) => (
+              <div key={category._id}>
+                <div className="flex items-center">
+                  <Link
+                    href={`/category/${category.slug}`}
+                    onClick={() => { setOpen(false); apiLogEvent({ type: 'click', categoryId: category._id }); }}
+                    className="flex-1 rounded-btn px-4 py-2.5 font-body text-sm font-medium text-ink-soft transition-colors hover:bg-bg hover:text-wine"
+                  >
+                    {category.name}
+                  </Link>
+                  {children.length > 0 && (
+                    <button
+                      onClick={() => setExpanded((cur) => (cur === category._id ? null : category._id))}
+                      aria-label={`Toggle ${category.name} subcategories`}
+                      className="px-3 py-2.5 font-body text-sm text-ink-soft"
+                    >
+                      {expanded === category._id ? '−' : '+'}
+                    </button>
+                  )}
+                </div>
+
+                {children.length > 0 && expanded === category._id && (
+                  <div className="ml-3 flex flex-col border-l border-line pl-2">
+                    {children.map((child) => (
+                      <Link
+                        key={child._id}
+                        href={`/category/${child.slug}`}
+                        onClick={() => { setOpen(false); apiLogEvent({ type: 'click', categoryId: child._id }); }}
+                        className="rounded-btn px-4 py-2 font-body text-xs text-ink-soft transition-colors hover:bg-bg hover:text-wine"
+                      >
+                        {child.name}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
             ))}
             <div className="my-1 border-t border-line" />
             <Link
