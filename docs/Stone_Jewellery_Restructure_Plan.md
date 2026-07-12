@@ -32,36 +32,56 @@ still open, and the build plan once open items are closed.
   advertising-claim scrutiny for now — worth remembering if benefit claims
   get added later, that's the point to revisit wording carefully.
 
-## 2. Still open — confirm before building
+## 2. Now decided (2026-07-12)
 
-- [ ] **Custom order request form fields.** Client asked for this section
-  but hasn't specified fields. Proposed default (needs his sign-off):
-  name, phone, email, occasion, budget range, preferred stone/style, a
-  reference image upload, free-text message.
-- [ ] **What happens when a custom order form is submitted** — does the
-  client get notified to call the customer, or does it just sit in an
-  admin list (same pattern as the existing Leads page)?
-- [ ] **The "revolving circular" visual** between the Stone and Jewellery
-  sections — still too vague to build. Need a reference (a site he likes,
-  a screenshot, or a plain description of the motion: spins on load? on
-  hover? cycles through images?).
-- [ ] **Stone bracelet naming** — Jewellery's existing bracelet category is
-  called "Bangles" in the nav, so there's no literal name collision today.
-  Recommend naming the Stone subcategory something explicit like **"Rashi
-  Bracelets"** (not just "Bracelets") so customers never confuse the two on
-  sight. Needs client confirmation on the exact label.
-- [ ] **Sales channel for Stone products** — assuming **website-exclusive**
-  by default (natural/precious items, never listed on Amazon/Flipkart,
-  consistent with the existing premium-line rule in CLAUDE.md). Confirm
-  this is correct and not meant to also go on marketplace.
-- [ ] **Dummy data removal scope** — clear demo Categories/Products (agreed,
-  banners stay untouched). Still need a yes/no on the demo **Styles**
-  (Kundan, Meenakari, Maasai Beadwork, Minimalist, etc.) — keep as real
-  tags for future Jewellery products, or wipe and start fresh?
+- **Custom order request form**: client confirmed the proposed field list
+  (name, phone, email, occasion, budget range, preferred stone/style,
+  reference image upload, message) — **and it opens as a modal**, not a
+  separate page. Triggered by a CTA button on the Stone section.
+- **Stone bracelet naming**: developer's call, per client — going with
+  **"Rashi Bracelets"** to keep it clearly distinct from Jewellery's
+  existing "Bangles" category.
+- **Sales channel for Stone products**: confirmed **website-exclusive**
+  only, never listed on marketplace — matches the existing premium-line
+  rule.
+- **The "revolving circular" visual**: client asked us to design this
+  ourselves rather than supply a reference. Decision below.
+
+### Design: rotating medallion badge
+A circular badge (~160px) sits centered between the Stone and Jewellery
+panels — overlapping the divider on desktop, stacked centered on mobile.
+- **Outer ring**: small uppercase text curved around the circle (SVG
+  `<textPath>`), reading something like "NATURAL STONES · HANDCRAFTED
+  JEWELLERY ·" repeating — set in Inter (not Special Elite; curved text at
+  this size needs to stay legible, and Special Elite is reserved for short
+  flat labels per the design system).
+- **Rotation**: the outer ring rotates continuously via CSS
+  (`animation: spin 26s linear infinite`) — slow and steady, reads as
+  premium rather than attention-grabbing. Same lightweight CSS-only
+  approach as the existing Coming Soon hero tilt effect, no new
+  dependencies.
+- **Center**: stays static (does not rotate) — the Varcha V-mark, in gold,
+  sitting still while the ring turns around it.
+- This is deliberately restrained rather than a spinning carousel or
+  flashy 3D object — matches the "craft journal" brand direction and
+  reuses existing brand assets (logo, gold token) instead of inventing new
+  visual language.
+
+## 3. Still open — one item left
+
+- [ ] **Dummy data removal scope** — clear demo Categories/Products
+  (agreed, banners stay untouched). Still need a yes/no on the demo
+  **Styles** (Kundan, Meenakari, Maasai Beadwork, Minimalist, etc.) — keep
+  as real tags for future Jewellery products, or wipe and start fresh?
+- [ ] **What happens when the custom-order modal is submitted** —
+  defaulting to the same pattern as `/admin/leads` (sits in an admin list,
+  no auto-notification) unless client wants something more active (e.g.
+  an email alert like the order-confirmation flow). Reasonable default,
+  flagging in case he wants more.
 
 ---
 
-## 3. Technical design (once the above is confirmed)
+## 4. Technical design
 
 ### Category structure
 - Two new top-level `Category` documents: **"Stone"** and **"Jewellery"**
@@ -99,31 +119,32 @@ still open, and the build plan once open items are closed.
   `channel = marketplace`).
 
 ### Frontend
-- Homepage: new section directly below the hero banner, split into two
-  blocks (Stone / Jewellery) — exact layout depends on the still-open
-  "revolving circular" visual.
+- Homepage: new section directly below the hero banner — two blocks side
+  by side (Stone / Jewellery) with the rotating medallion badge centered
+  between them.
 - Stone PDP: same template as regular PDP, plus the rashi tag displayed
   near the product name/style area.
-- Custom order form: new page/section (`/custom-order` or embedded on
-  Stone's landing block) — reuses the same lead-capture pattern already
-  built (`LeadCaptureForm` component) as a starting point, extended with
-  the extra fields once confirmed.
+- Custom order form: **modal**, not a page — a new `CustomOrderModal`
+  component triggered by a CTA button on the Stone block, reusing the same
+  submit/success-state pattern already built in `LeadCaptureForm`, extended
+  with the extra fields (occasion, budget range, preferred stone/style,
+  image upload).
+- New `CustomOrderRequest` collection (mirrors `Lead`) + admin list page
+  at `/admin/custom-orders`, same pattern as `/admin/leads`.
 
 ---
 
-## 4. Build sequence (once open items are closed)
+## 5. Build sequence
 
-1. Confirm all open items in §2 with client.
+1. Confirm the one remaining open item in §3 (Styles wipe) with client.
 2. Restructure categories (Stone / Jewellery parents, re-parent existing
    categories) — data change, no schema change.
 3. Add `Rashi` type + `Product.rashi` field (shared type, backend model,
    admin form, PLP filter).
 4. Clear dummy Categories/Products (and Styles, pending confirmation) —
    banners untouched.
-5. Build the custom-order request form + admin list page (same pattern as
-   `/admin/leads`).
-6. Build the homepage Stone/Jewellery section + connecting visual, once a
-   reference is available.
+5. Build the custom-order modal + backend + admin list page.
+6. Build the homepage Stone/Jewellery section + rotating medallion badge.
 7. Update `docs/SRS.md` with the new FR + schema entries (per the
    documentation sync rule) once this actually ships — not before, since
    the spec should reflect what's built, not what's still being designed.
