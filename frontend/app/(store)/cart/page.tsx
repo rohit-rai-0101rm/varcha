@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useCart } from '@/context/CartContext';
+import LeadCaptureForm from '@/components/LeadCaptureForm';
 
 export default function CartPage() {
   const { items, removeItem, updateQty, totalAmount } = useCart();
@@ -78,9 +79,10 @@ export default function CartPage() {
         <div className="w-full max-w-xs rounded-card border border-line bg-surface p-5 text-center">
           <p className="font-annotation text-xs uppercase tracking-widest text-sketch">Coming Soon</p>
           <p className="mt-2 font-body text-sm text-ink-soft">
-            Secure online checkout is launching shortly. Your cart is saved — come back soon to
-            complete your purchase.
+            Secure online checkout is launching shortly. Your cart is saved — leave your number
+            below and we&apos;ll message you the moment it opens.
           </p>
+          <LeadCaptureForm className="mt-4 text-left" />
         </div>
       </div>
     </main>

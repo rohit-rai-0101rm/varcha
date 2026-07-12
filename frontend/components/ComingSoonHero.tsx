@@ -3,7 +3,7 @@
 import { useRef, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { apiCreateLead } from '@/lib/client-api';
+import LeadCaptureForm from './LeadCaptureForm';
 
 interface Props {
   imageUrl?: string;
@@ -13,30 +13,6 @@ interface Props {
 export default function ComingSoonHero({ imageUrl, discountText }: Props) {
   const cardRef = useRef<HTMLDivElement>(null);
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
-
-  const [name, setName] = useState('');
-  const [phone, setPhone] = useState('');
-  const [email, setEmail] = useState('');
-  const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
-  const [errorMsg, setErrorMsg] = useState('');
-
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    if (!name.trim() || !phone.trim()) {
-      setStatus('error');
-      setErrorMsg('Please enter your name and phone number.');
-      return;
-    }
-    setStatus('submitting');
-    setErrorMsg('');
-    try {
-      await apiCreateLead({ name: name.trim(), phone: phone.trim(), email: email.trim() || undefined });
-      setStatus('success');
-    } catch (err) {
-      setStatus('error');
-      setErrorMsg(err instanceof Error ? err.message : 'Something went wrong — please try again.');
-    }
-  }
 
   function handleMouseMove(e: React.MouseEvent<HTMLDivElement>) {
     const el = cardRef.current;
@@ -69,51 +45,7 @@ export default function ComingSoonHero({ imageUrl, discountText }: Props) {
             checkout opens.
           </p>
 
-          {discountText && (
-            <p className="mt-3 font-annotation text-xs uppercase tracking-widest text-wine">
-              {discountText}
-            </p>
-          )}
-
-          {status === 'success' ? (
-            <p className="mx-auto mt-7 max-w-md rounded-card border border-line bg-bg px-5 py-4 font-body text-sm text-ink lg:mx-0">
-              Thanks{name.trim() ? `, ${name.trim().split(' ')[0]}` : ''}! We&apos;ll message you the
-              moment checkout goes live.
-            </p>
-          ) : (
-            <form onSubmit={handleSubmit} className="mx-auto mt-7 max-w-md space-y-3 lg:mx-0">
-              <div className="flex flex-col gap-3 sm:flex-row">
-                <input
-                  className="w-full rounded-btn border border-line bg-bg px-3 py-2.5 font-body text-sm text-ink placeholder-ink-soft focus:border-wine focus:outline-none"
-                  placeholder="Your name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                />
-                <input
-                  className="w-full rounded-btn border border-line bg-bg px-3 py-2.5 font-body text-sm text-ink placeholder-ink-soft focus:border-wine focus:outline-none"
-                  placeholder="Phone number"
-                  type="tel"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                />
-              </div>
-              <input
-                className="w-full rounded-btn border border-line bg-bg px-3 py-2.5 font-body text-sm text-ink placeholder-ink-soft focus:border-wine focus:outline-none"
-                placeholder="Email (optional)"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-              {status === 'error' && <p className="font-body text-xs text-red-600">{errorMsg}</p>}
-              <button
-                type="submit"
-                disabled={status === 'submitting'}
-                className="inline-flex items-center gap-2 rounded-btn bg-wine px-7 py-3.5 font-body text-sm font-semibold text-surface transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
-              >
-                {status === 'submitting' ? 'Submitting…' : 'Notify Me at Launch'}
-              </button>
-            </form>
-          )}
+          <LeadCaptureForm discountText={discountText} className="mx-auto mt-7 max-w-md lg:mx-0" />
 
           <Link
             href="/search"
