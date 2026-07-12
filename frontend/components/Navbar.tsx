@@ -19,7 +19,7 @@ export default async function Navbar() {
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-gold opacity-75" />
             <span className="relative inline-flex h-2 w-2 rounded-full bg-gold" />
           </span>
-          Online checkout launching soon &nbsp;·&nbsp; Handcrafted in India
+          Browse now, order the moment checkout opens &nbsp;·&nbsp; Handcrafted in India
         </p>
       </div>
 
