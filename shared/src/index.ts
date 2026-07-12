@@ -66,6 +66,7 @@ export interface Category {
   parentCategory?: string; // ObjectId ref — nullable for top-level categories
   image?: string;
   isActive: boolean;
+  showInNav: boolean; // default true; lets admin hide a category from the nav/footer without deactivating it
 }
 
 export interface Style {

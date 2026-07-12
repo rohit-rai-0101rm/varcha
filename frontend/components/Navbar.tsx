@@ -8,7 +8,14 @@ import CategoryNavLinks from './CategoryNavLinks';
 import Logo from './Logo';
 
 export default async function Navbar() {
-  const categories = await fetchCategories();
+  const allCategories = await fetchCategories();
+  const visible = allCategories.filter((c) => c.showInNav !== false);
+  const tree = visible
+    .filter((c) => !c.parentCategory)
+    .map((top) => ({
+      category: top,
+      children: visible.filter((c) => c.parentCategory === top._id),
+    }));
 
   return (
     <header className="sticky top-0 z-50">
@@ -31,7 +38,7 @@ export default async function Navbar() {
           </Link>
 
           <nav className="hidden flex-1 items-center justify-center gap-8 md:flex">
-            <CategoryNavLinks categories={categories} />
+            <CategoryNavLinks tree={tree} />
           </nav>
 
           <div className="flex items-center gap-2">
@@ -58,7 +65,7 @@ export default async function Navbar() {
             <CartIcon />
             <AuthNav />
             <ThemeToggle />
-            <MobileMenu categories={categories} />
+            <MobileMenu tree={tree} />
           </div>
         </div>
       </div>
