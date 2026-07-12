@@ -13,7 +13,7 @@ function Panel({ cat, tagline }: { cat: ApiCategory; tagline: string }) {
   return (
     <Link
       href={`/category/${cat.slug}`}
-      className="group relative block aspect-[4/5] w-full overflow-hidden rounded-card border border-line bg-surface sm:aspect-[16/11] lg:aspect-[4/5]"
+      className="group relative block aspect-[4/5] w-full overflow-hidden rounded-card border border-line bg-surface sm:aspect-[16/11] lg:aspect-[16/10]"
     >
       {cat.image ? (
         <Image
@@ -43,16 +43,16 @@ function Panel({ cat, tagline }: { cat: ApiCategory; tagline: string }) {
 
 export default function StoneJewellerySection({ stone, jewellery }: Props) {
   return (
-    <section className="relative bg-bg py-16 lg:py-24">
+    <section className="relative bg-bg py-12 lg:py-14">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="mb-10 text-center">
+        <div className="mb-6 text-center">
           <span className="font-annotation text-[9px] tracking-[0.45em] text-wine uppercase">
             Two Worlds, One Craft
           </span>
-          <h2 className="mt-2 font-display text-4xl font-bold text-ink lg:text-5xl">
+          <h2 className="mt-2 font-display text-3xl font-bold text-ink lg:text-4xl">
             Stone &amp; Jewellery
           </h2>
-          <p className="mx-auto mt-3 max-w-lg font-body text-sm leading-relaxed text-ink-soft">
+          <p className="mx-auto mt-2 max-w-lg font-body text-sm leading-relaxed text-ink-soft">
             Natural gemstone bracelets tied to your rashi, alongside our full line of
             handcrafted fashion jewellery.
           </p>
@@ -62,13 +62,14 @@ export default function StoneJewellerySection({ stone, jewellery }: Props) {
           <Panel cat={stone} tagline="Rashi Bracelets · Natural Stone" />
           <Panel cat={jewellery} tagline="Handcrafted · Everyday to Bridal" />
 
-          {/* Medallion — overlaps the divider on desktop, sits centered between panels on mobile */}
-          <div className="relative -my-3 flex justify-center lg:absolute lg:inset-0 lg:my-0 lg:items-center">
-            <RotatingMedallion size={140} />
+          {/* Medallion — solid gold ring, overlaps the seam on desktop */}
+          <div className="relative -my-6 flex justify-center lg:absolute lg:inset-0 lg:my-0 lg:items-center">
+            <RotatingMedallion size={150} className="lg:hidden" />
+            <RotatingMedallion size={190} className="hidden lg:block" />
           </div>
         </div>
 
-        <div className="mt-10 text-center">
+        <div className="mt-6 text-center">
           <p className="font-body text-sm text-ink-soft">
             Don&apos;t see quite what you have in mind?
           </p>

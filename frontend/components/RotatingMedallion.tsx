@@ -7,34 +7,46 @@ interface Props {
 }
 
 const RING_TEXT = 'NATURAL STONES  ·  HANDCRAFTED JEWELLERY  ·  ';
+const RING_WIDTH = 10;
 
-export default function RotatingMedallion({ size = 160, className = '' }: Props) {
+export default function RotatingMedallion({ size = 176, className = '' }: Props) {
   const pathId = useId();
-  const radius = size / 2 - 15;
-  const center = size / 2;
+  const innerSize = size - RING_WIDTH * 2;
+  const textRadius = innerSize / 2 - 16;
+  const innerCenter = innerSize / 2;
 
   return (
     <div
-      className={`relative shrink-0 rounded-full border border-line bg-surface shadow-[0_18px_36px_-20px_rgba(0,0,0,.18)] ${className}`}
-      style={{ width: size, height: size }}
+      className={`relative shrink-0 rounded-full shadow-[0_0_0_1px_rgba(184,144,46,0.15),0_20px_45px_-18px_rgba(0,0,0,.4),0_0_36px_rgba(184,144,46,0.35)] ${className}`}
+      style={{
+        width: size,
+        height: size,
+        background: 'linear-gradient(155deg, #F3E2B0 0%, #D9B36A 45%, #9E7328 100%)',
+      }}
     >
-      <svg
-        viewBox={`0 0 ${size} ${size}`}
-        className="absolute inset-0 h-full w-full animate-[spin_26s_linear_infinite]"
-      >
-        <path
-          id={pathId}
-          fill="none"
-          d={`M ${center - radius},${center} a ${radius},${radius} 0 1,1 ${radius * 2},0 a ${radius},${radius} 0 1,1 -${radius * 2},0`}
-        />
-        <text className="fill-sketch font-body uppercase" style={{ fontSize: 8.5, letterSpacing: '0.18em' }}>
-          <textPath href={`#${pathId}`} startOffset="0%">
-            {RING_TEXT}
-          </textPath>
-        </text>
-      </svg>
-      <div className="absolute inset-0 flex items-center justify-center">
-        <LogoMark className="h-8 w-8 text-gold" />
+      {/* inner disc */}
+      <div className="absolute rounded-full bg-surface" style={{ inset: RING_WIDTH }}>
+        {/* rotating text ring */}
+        <svg
+          viewBox={`0 0 ${innerSize} ${innerSize}`}
+          className="absolute inset-0 h-full w-full animate-[spin_22s_linear_infinite]"
+        >
+          <path
+            id={pathId}
+            fill="none"
+            d={`M ${innerCenter - textRadius},${innerCenter} a ${textRadius},${textRadius} 0 1,1 ${textRadius * 2},0 a ${textRadius},${textRadius} 0 1,1 -${textRadius * 2},0`}
+          />
+          <text className="fill-wine font-body font-semibold uppercase" style={{ fontSize: 9.5, letterSpacing: '0.14em' }}>
+            <textPath href={`#${pathId}`} startOffset="0%">
+              {RING_TEXT}
+            </textPath>
+          </text>
+        </svg>
+
+        {/* static center mark */}
+        <div className="absolute inset-0 flex items-center justify-center">
+          <LogoMark className="h-11 w-11 text-wine" />
+        </div>
       </div>
     </div>
   );
