@@ -37,6 +37,7 @@ Place one real paid order (after KYC). Confirm: admin gets the email within 60 s
 
 > **Goal:** Make order fulfilment manageable without the client needing to hire someone or juggle spreadsheets.
 > **Charge:** ₹10,000–15,000
+> **Detailed implementation plan:** see `docs/Razorpay_Live_And_Shiprocket_Plan.md` — Shiprocket must wait until Razorpay is actually live, since it exists to fulfil real paid orders.
 
 ### Features
 
