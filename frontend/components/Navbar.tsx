@@ -15,7 +15,7 @@ export default async function Navbar() {
       {/* Announcement strip */}
       <div className="bg-wine px-4 py-2.5 text-center">
         <p className="font-body text-xs font-medium tracking-widest text-surface/90 uppercase">
-          Free shipping on prepaid orders &nbsp;·&nbsp; Handcrafted in India
+          Online checkout launching soon &nbsp;·&nbsp; Handcrafted in India
         </p>
       </div>
 

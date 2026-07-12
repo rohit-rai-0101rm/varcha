@@ -25,6 +25,9 @@ function loadRazorpayScript(): Promise<boolean> {
   });
 }
 
+// Flip to true once Razorpay is live — see docs/Razorpay_Live_And_Shiprocket_Plan.md
+const CHECKOUT_ENABLED = false;
+
 const STATES = [
   'Andhra Pradesh', 'Arunachal Pradesh', 'Assam', 'Bihar', 'Chhattisgarh', 'Goa',
   'Gujarat', 'Haryana', 'Himachal Pradesh', 'Jharkhand', 'Karnataka', 'Kerala',
@@ -64,6 +67,23 @@ export default function CheckoutPage() {
         <h1 className="font-display text-3xl font-semibold text-[var(--ink)]">Your cart is empty</h1>
         <Link href="/" className="mt-8 inline-block rounded-lg bg-[var(--wine)] px-6 py-3 font-medium text-[var(--surface)]">
           Continue Shopping
+        </Link>
+      </main>
+    );
+  }
+
+  if (!CHECKOUT_ENABLED) {
+    return (
+      <main className="mx-auto max-w-2xl px-4 py-20 text-center">
+        <p className="font-annotation text-xs uppercase tracking-widest text-sketch">Coming Soon</p>
+        <h1 className="mt-2 font-display text-3xl font-semibold text-[var(--ink)]">
+          Secure checkout is launching shortly
+        </h1>
+        <p className="mt-3 text-[var(--ink-soft)]">
+          Your cart is saved — come back soon to complete your purchase.
+        </p>
+        <Link href="/cart" className="mt-8 inline-block rounded-lg bg-[var(--wine)] px-6 py-3 font-medium text-[var(--surface)]">
+          Back to Cart
         </Link>
       </main>
     );

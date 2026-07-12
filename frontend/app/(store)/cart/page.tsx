@@ -75,12 +75,13 @@ export default function CartPage() {
           <span>Total</span>
           <span>₹{totalAmount.toLocaleString('en-IN')}</span>
         </div>
-        <Link
-          href="/checkout"
-          className="rounded-lg bg-[var(--wine)] px-8 py-3 font-medium text-[var(--surface)] transition-opacity hover:opacity-90"
-        >
-          Proceed to Checkout
-        </Link>
+        <div className="w-full max-w-xs rounded-card border border-line bg-surface p-5 text-center">
+          <p className="font-annotation text-xs uppercase tracking-widest text-sketch">Coming Soon</p>
+          <p className="mt-2 font-body text-sm text-ink-soft">
+            Secure online checkout is launching shortly. Your cart is saved — come back soon to
+            complete your purchase.
+          </p>
+        </div>
       </div>
     </main>
   );
