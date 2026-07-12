@@ -14,6 +14,14 @@ These are not features. Fix these before building anything else.
 | 2 | **Real product catalog** — 9 demo products with fake photos and placeholder Amazon links | Client + Developer | Site works but sells nothing real |
 | 3 | ~~**Order notifications**~~ — done 2026-07-05, admin + customer emails now fire on every paid order | Developer | Resolved |
 
+> **Catalog restructure in progress (2026-07-12):** client wants the
+> catalog split into two top-level sections — Stone (natural gemstone
+> rashi bracelets) and Jewellery (existing fashion catalog) — plus a
+> custom-order request form. See `docs/Stone_Jewellery_Restructure_Plan.md`
+> for the full plan and what's still pending client confirmation before
+> build starts. This is a natural moment to also clear the demo data in
+> blocker #2 above, once the restructure is confirmed.
+
 ---
 
 ## Phase 2 — Revenue Ready
