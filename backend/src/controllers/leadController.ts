@@ -3,12 +3,22 @@ import * as leadService from '../services/leadService';
 
 export async function create(req: Request, res: Response) {
   try {
-    const { name, phone, email } = req.body;
+    const { name, phone, email, cartItems } = req.body;
     if (!name?.trim() || !phone?.trim()) {
       res.status(400).json({ message: 'Name and phone are required' });
       return;
     }
-    const lead = await leadService.createLead({ name: name.trim(), phone: phone.trim(), email: email?.trim() });
+    const cleanCartItems = Array.isArray(cartItems)
+      ? cartItems
+          .filter((i) => i?.productId && i?.name && Number.isFinite(i?.qty) && Number.isFinite(i?.price))
+          .map((i) => ({ productId: i.productId, name: i.name, qty: i.qty, price: i.price }))
+      : [];
+    const lead = await leadService.createLead({
+      name: name.trim(),
+      phone: phone.trim(),
+      email: email?.trim(),
+      cartItems: cleanCartItems,
+    });
     res.status(201).json(lead);
   } catch {
     res.status(500).json({ message: 'Failed to save — please try again' });

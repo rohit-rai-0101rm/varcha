@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { apiCreateLead } from '@/lib/client-api';
+import { useCart } from '@/context/CartContext';
 
 interface Props {
   discountText?: string;
@@ -9,6 +10,7 @@ interface Props {
 }
 
 export default function LeadCaptureForm({ discountText, className = '' }: Props) {
+  const { items } = useCart();
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
@@ -25,7 +27,14 @@ export default function LeadCaptureForm({ discountText, className = '' }: Props)
     setStatus('submitting');
     setErrorMsg('');
     try {
-      await apiCreateLead({ name: name.trim(), phone: phone.trim(), email: email.trim() || undefined });
+      await apiCreateLead({
+        name: name.trim(),
+        phone: phone.trim(),
+        email: email.trim() || undefined,
+        cartItems: items.length > 0
+          ? items.map((i) => ({ productId: i.productId, name: i.name, qty: i.qty, price: i.price }))
+          : undefined,
+      });
       setStatus('success');
     } catch (err) {
       setStatus('error');

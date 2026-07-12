@@ -1,5 +1,5 @@
 # Software Requirements Specification — Varcha
-**Version 7.2 — Pre-Launch Lead Capture** · July 12, 2026
+**Version 7.3 — Lead Cart Context** · July 12, 2026
 
 ## Revision History
 | Version | Change |
@@ -14,6 +14,7 @@
 | 7.0 | Added FR-31: per-customer time-spent breakdown for sales follow-up |
 | 7.1 | §6.7 Events: renamed `amazon_redirect` type to `marketplace_redirect`; added `platform` field to cover both Amazon and Flipkart per FR-7 |
 | 7.2 | Added FR-32: pre-launch "Notify Me" lead capture on the homepage Coming Soon hero, feeding a new Leads collection (§6.12), while own-checkout is paused pending Razorpay KYC |
+| 7.3 | FR-32 extended: capture form also embedded on the Cart page (higher-intent visitors); Leads now snapshot the visitor's cart contents (§6.12 `cartItems`) at signup so follow-up outreach can reference specific products |
 
 ---
 
@@ -128,7 +129,7 @@ Defined in the companion Business Plan document. This SRS assumes that positioni
 - **FR-29**: Admin Settings page — WhatsApp number, contact email, social links, homepage banner toggle, first-order discount text — all editable without a code change.
 
 ### 3.9 Pre-Launch Lead Capture (temporary — active while own-checkout is paused)
-- **FR-32**: While own-checkout is disabled pending Razorpay KYC (see Section 8 note below), the homepage displays a "Notify Me" capture form (name, phone required; email optional). Submissions are stored in the Leads collection (§6.12) for admin outreach when checkout goes live. No admin auth required to submit; listing captured leads requires admin auth (`GET /api/admin/leads`).
+- **FR-32**: While own-checkout is disabled pending Razorpay KYC (see Section 8 note below), the homepage Coming Soon hero and the Cart page both display a "Notify Me" capture form (name, phone required; email optional). If the visitor has items in their cart at signup, those items (product, qty, price snapshot) are stored alongside the lead so admin outreach can reference what they were interested in. Submissions are stored in the Leads collection (§6.12). No admin auth required to submit; listing captured leads requires admin auth (`GET /api/admin/leads`).
 
 ---
 
@@ -282,13 +283,14 @@ Defined in the companion Business Plan document. This SRS assumes that positioni
 | firstOrderDiscountText | String | e.g. "Flat ₹500 off" |
 | updatedAt | Date | Auto-set on save |
 
-### 6.12 Leads (NEW in v7.2)
+### 6.12 Leads (NEW in v7.2; extended v7.3)
 | Field | Type | Notes |
 |---|---|---|
 | _id | ObjectId | Primary key |
 | name | String | Required |
 | phone | String | Required |
 | email | String | Optional |
+| cartItems | Array<{productId, name, qty, price}> | Optional; snapshot of visitor's cart at signup time (v7.3) |
 | createdAt | Date | Auto-set |
 
 ---

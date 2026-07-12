@@ -194,7 +194,12 @@ export async function apiGetOrderById(id: string): Promise<unknown | null> {
 
 // ── Leads ─────────────────────────────────────────────────────────────────────
 
-export async function apiCreateLead(body: { name: string; phone: string; email?: string }) {
+export async function apiCreateLead(body: {
+  name: string;
+  phone: string;
+  email?: string;
+  cartItems?: { productId: string; name: string; qty: number; price: number }[];
+}) {
   const res = await fetch(`${API}/api/leads`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },

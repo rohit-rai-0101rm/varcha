@@ -3,11 +3,19 @@
 import { useEffect, useState } from 'react';
 import { adminApiListLeads } from '@/lib/admin-api';
 
+interface LeadCartItem {
+  productId: string;
+  name: string;
+  qty: number;
+  price: number;
+}
+
 interface Lead {
   _id: string;
   name: string;
   phone: string;
   email?: string;
+  cartItems?: LeadCartItem[];
   createdAt: string;
 }
 
@@ -40,7 +48,7 @@ export default function AdminLeadsPage() {
           <table className="w-full font-body text-sm">
             <thead className="bg-surface text-left">
               <tr>
-                {['Name', 'Phone', 'Email', 'Signed up'].map((h) => (
+                {['Name', 'Phone', 'Email', 'Interested In', 'Signed up'].map((h) => (
                   <th key={h} className="border-b border-line px-4 py-3 font-medium text-ink-soft">{h}</th>
                 ))}
               </tr>
@@ -51,6 +59,19 @@ export default function AdminLeadsPage() {
                   <td className="px-4 py-3 font-medium text-ink">{l.name}</td>
                   <td className="px-4 py-3 text-ink-soft">{l.phone}</td>
                   <td className="px-4 py-3 text-ink-soft">{l.email || '—'}</td>
+                  <td className="px-4 py-3 text-ink-soft">
+                    {l.cartItems && l.cartItems.length > 0 ? (
+                      <div className="space-y-0.5">
+                        {l.cartItems.map((item) => (
+                          <p key={item.productId}>
+                            {item.name} <span className="text-xs">× {item.qty}</span>
+                          </p>
+                        ))}
+                      </div>
+                    ) : (
+                      '—'
+                    )}
+                  </td>
                   <td className="px-4 py-3 whitespace-nowrap text-ink-soft">
                     {new Date(l.createdAt).toLocaleDateString('en-IN')}
                   </td>

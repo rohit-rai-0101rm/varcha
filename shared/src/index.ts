@@ -201,10 +201,18 @@ export interface Settings {
   updatedAt: Date;
 }
 
+export interface LeadCartItem {
+  productId: string;
+  name: string;
+  qty: number;
+  price: number; // snapshot at signup time
+}
+
 export interface Lead {
   _id: string;
   name: string;
   phone: string;
   email?: string;
+  cartItems?: LeadCartItem[]; // what was in their cart when they signed up, if anything
   createdAt: Date;
 }

@@ -1,5 +1,12 @@
 import Lead from '../models/Lead';
 
-export async function createLead(data: { name: string; phone: string; email?: string }) {
+interface CreateLeadInput {
+  name: string;
+  phone: string;
+  email?: string;
+  cartItems?: { productId: string; name: string; qty: number; price: number }[];
+}
+
+export async function createLead(data: CreateLeadInput) {
   return Lead.create(data);
 }
