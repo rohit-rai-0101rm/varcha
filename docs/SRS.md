@@ -1,5 +1,5 @@
 # Software Requirements Specification — Varcha
-**Version 7.1 — Marketplace Redirect Event Type** · June 20, 2026
+**Version 7.2 — Pre-Launch Lead Capture** · July 12, 2026
 
 ## Revision History
 | Version | Change |
@@ -13,6 +13,7 @@
 | 6.0 | Replaced fixed `finish` enum with admin-managed Styles collection. Added dropdown-only data-integrity rule (FR-30) |
 | 7.0 | Added FR-31: per-customer time-spent breakdown for sales follow-up |
 | 7.1 | §6.7 Events: renamed `amazon_redirect` type to `marketplace_redirect`; added `platform` field to cover both Amazon and Flipkart per FR-7 |
+| 7.2 | Added FR-32: pre-launch "Notify Me" lead capture on the homepage Coming Soon hero, feeding a new Leads collection (§6.12), while own-checkout is paused pending Razorpay KYC |
 
 ---
 
@@ -125,6 +126,9 @@ Defined in the companion Business Plan document. This SRS assumes that positioni
 ### 3.8 WhatsApp Support & Site Settings
 - **FR-28**: Persistent sitewide "Chat on WhatsApp" button (wa.me, pre-filled message; includes product name if launched from a PDP).
 - **FR-29**: Admin Settings page — WhatsApp number, contact email, social links, homepage banner toggle, first-order discount text — all editable without a code change.
+
+### 3.9 Pre-Launch Lead Capture (temporary — active while own-checkout is paused)
+- **FR-32**: While own-checkout is disabled pending Razorpay KYC (see Section 8 note below), the homepage displays a "Notify Me" capture form (name, phone required; email optional). Submissions are stored in the Leads collection (§6.12) for admin outreach when checkout goes live. No admin auth required to submit; listing captured leads requires admin auth (`GET /api/admin/leads`).
 
 ---
 
@@ -277,6 +281,15 @@ Defined in the companion Business Plan document. This SRS assumes that positioni
 | homeBannerEnabled | Boolean | Sitewide on/off toggle |
 | firstOrderDiscountText | String | e.g. "Flat ₹500 off" |
 | updatedAt | Date | Auto-set on save |
+
+### 6.12 Leads (NEW in v7.2)
+| Field | Type | Notes |
+|---|---|---|
+| _id | ObjectId | Primary key |
+| name | String | Required |
+| phone | String | Required |
+| email | String | Optional |
+| createdAt | Date | Auto-set |
 
 ---
 

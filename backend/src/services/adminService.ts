@@ -7,6 +7,7 @@ import Style from '../models/Style';
 import Banner from '../models/Banner';
 import Order from '../models/Order';
 import Settings from '../models/Settings';
+import Lead from '../models/Lead';
 
 function slugify(text: string): string {
   return (text ?? '').toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
@@ -168,4 +169,10 @@ export async function updateSettings(data: Partial<{
   firstOrderDiscountText: string;
 }>) {
   return Settings.findByIdAndUpdate(SETTINGS_ID, { $set: data }, { new: true, upsert: true });
+}
+
+// ── Leads ────────────────────────────────────────────────────────────────────
+
+export async function adminListLeads() {
+  return Lead.find().sort({ createdAt: -1 }).lean();
 }

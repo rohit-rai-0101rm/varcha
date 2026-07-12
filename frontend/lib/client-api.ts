@@ -191,3 +191,16 @@ export async function apiGetOrderById(id: string): Promise<unknown | null> {
   if (!res.ok) return null;
   return res.json();
 }
+
+// ── Leads ─────────────────────────────────────────────────────────────────────
+
+export async function apiCreateLead(body: { name: string; phone: string; email?: string }) {
+  const res = await fetch(`${API}/api/leads`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message ?? 'Something went wrong — please try again');
+  return data;
+}

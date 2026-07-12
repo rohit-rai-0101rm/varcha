@@ -53,6 +53,9 @@ router.get('/analytics/sessions', requireAdmin, ctrl.getTopSessions);
 router.get('/customers', requireAdmin, ctrl.listCustomers);
 router.get('/customers/:userId', requireAdmin, ctrl.getCustomerDetail);
 
+// Leads (pre-launch "Notify Me" signups)
+router.get('/leads', requireAdmin, ctrl.listLeads);
+
 // Image upload → Cloudinary
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 router.post('/upload', requireAdmin, upload.single('file') as any, ctrl.uploadImage);

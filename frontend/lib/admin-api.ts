@@ -265,3 +265,11 @@ export async function adminApiUpdateSettings(data: unknown) {
   if (!res.ok) throw new Error(json.message ?? 'Failed');
   return json;
 }
+
+// ── Leads ─────────────────────────────────────────────────────────────────────
+
+export async function adminApiListLeads() {
+  const res = await fetch(`${API}/api/admin/leads`, { headers: adminHeaders() });
+  if (!res.ok) return [];
+  return res.json();
+}

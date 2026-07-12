@@ -13,8 +13,12 @@ export default async function Navbar() {
   return (
     <header className="sticky top-0 z-50">
       {/* Announcement strip */}
-      <div className="bg-wine px-4 py-2.5 text-center">
-        <p className="font-body text-xs font-medium tracking-widest text-surface/90 uppercase">
+      <div className="bg-wine px-4 py-3 text-center">
+        <p className="flex items-center justify-center gap-2 font-body text-[13px] font-semibold tracking-wide text-surface uppercase sm:text-sm sm:tracking-widest">
+          <span className="relative flex h-2 w-2 shrink-0">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-gold opacity-75" />
+            <span className="relative inline-flex h-2 w-2 rounded-full bg-gold" />
+          </span>
           Online checkout launching soon &nbsp;·&nbsp; Handcrafted in India
         </p>
       </div>

@@ -200,3 +200,11 @@ export interface Settings {
   firstOrderDiscountText?: string;
   updatedAt: Date;
 }
+
+export interface Lead {
+  _id: string;
+  name: string;
+  phone: string;
+  email?: string;
+  createdAt: Date;
+}

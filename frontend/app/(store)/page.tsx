@@ -59,7 +59,7 @@ export default async function Home() {
       />
 
       {/* ── COMING SOON ───────────────────────────── */}
-      <ComingSoonHero imageUrl={comingSoonImage} />
+      <ComingSoonHero imageUrl={comingSoonImage} discountText={settings?.firstOrderDiscountText} />
 
       {/* ── CATEGORIES ────────────────────────────── */}
       {categories.length > 0 && (
