@@ -36,7 +36,7 @@ async function seed() {
     {
       name: 'Bangles',
       slug: 'bangles',
-      image: U('photo-1573408301185-9519f94816b5', 600),
+      image: U('photo-1611591437281-460bfbe1220a', 600),
     },
     {
       name: 'Earrings',
@@ -152,7 +152,7 @@ async function seed() {
       categoryId: bangles._id,
       price: 699,
       images: [
-        { url: U('photo-1573408301185-9519f94816b5'), type: 'product-shot' },
+        { url: U('photo-1611591437281-460bfbe1220a'), type: 'product-shot' },
       ],
       description:
         'Sleek geometric bangles with clean angular lines. Lightweight brass with gold plating. Standard 2.6-inch diameter.',
