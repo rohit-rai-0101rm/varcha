@@ -31,6 +31,15 @@ const config: Config = {
         panel: '12px',
         badge: '5px',
       },
+      keyframes: {
+        shimmer: {
+          '0%': { backgroundPosition: '200% 0' },
+          '100%': { backgroundPosition: '-200% 0' },
+        },
+      },
+      animation: {
+        shimmer: 'shimmer 3.5s linear infinite',
+      },
     },
   },
   plugins: [],

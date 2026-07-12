@@ -12,6 +12,7 @@ export const metadata: Metadata = {
 import HeroCarousel from '@/components/HeroCarousel';
 import CategoryCard from '@/components/CategoryCard';
 import FeaturedStrip from '@/components/FeaturedStrip';
+import ComingSoonHero from '@/components/ComingSoonHero';
 import PageTracker from '@/components/PageTracker';
 
 export default async function Home() {
@@ -28,6 +29,10 @@ export default async function Home() {
   const fallbackSlides = products
     .filter((p) => p.channel === 'website-exclusive' && p.images.length > 0)
     .slice(0, 4);
+
+  const comingSoonImage =
+    featuredProducts[0]?.images.find((i) => i.type === 'model-shot')?.url ??
+    featuredProducts[0]?.images.find((i) => i.type === 'product-shot')?.url;
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://varcha.in';
   const organizationJsonLd = {
@@ -52,6 +57,9 @@ export default async function Home() {
         fallbackSlides={fallbackSlides}
         firstCategory={categories[0]}
       />
+
+      {/* ── COMING SOON ───────────────────────────── */}
+      <ComingSoonHero imageUrl={comingSoonImage} />
 
       {/* ── CATEGORIES ────────────────────────────── */}
       {categories.length > 0 && (
