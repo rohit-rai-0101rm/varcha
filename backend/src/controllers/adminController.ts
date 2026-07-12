@@ -202,6 +202,12 @@ export async function listLeads(_req: Request, res: Response) {
   try { res.json(await svc.adminListLeads()); } catch (e) { err(res, e); }
 }
 
+// ── Custom order requests ────────────────────────────────────────────────────
+
+export async function listCustomOrders(_req: Request, res: Response) {
+  try { res.json(await svc.adminListCustomOrders()); } catch (e) { err(res, e); }
+}
+
 // ── Image upload ──────────────────────────────────────────────────────────────
 
 export async function uploadImage(req: Request, res: Response) {

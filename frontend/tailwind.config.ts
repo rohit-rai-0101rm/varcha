@@ -36,9 +36,19 @@ const config: Config = {
           '0%': { backgroundPosition: '200% 0' },
           '100%': { backgroundPosition: '-200% 0' },
         },
+        fadeIn: {
+          '0%': { opacity: '0' },
+          '100%': { opacity: '1' },
+        },
+        dialogIn: {
+          '0%': { opacity: '0', transform: 'translate(-50%, -50%) scale(0.96)' },
+          '100%': { opacity: '1', transform: 'translate(-50%, -50%) scale(1)' },
+        },
       },
       animation: {
         shimmer: 'shimmer 3.5s linear infinite',
+        fadeIn: 'fadeIn 150ms ease-out',
+        dialogIn: 'dialogIn 180ms ease-out',
       },
     },
   },

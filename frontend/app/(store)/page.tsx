@@ -13,6 +13,7 @@ import HeroCarousel from '@/components/HeroCarousel';
 import CategorySlider from '@/components/CategorySlider';
 import FeaturedStrip from '@/components/FeaturedStrip';
 import ComingSoonHero from '@/components/ComingSoonHero';
+import StoneJewellerySection from '@/components/StoneJewellerySection';
 import PageTracker from '@/components/PageTracker';
 
 export default async function Home() {
@@ -24,6 +25,8 @@ export default async function Home() {
     fetchBanners('home-hero'),
   ]);
   const categories = allCategories.filter((c) => c.showInNav !== false);
+  const stoneCategory = allCategories.find((c) => c.slug === 'stone');
+  const jewelleryCategory = allCategories.find((c) => c.slug === 'jewellery');
 
   const activeBanners = settings?.homeBannerEnabled ? heroBanners : [];
 
@@ -58,6 +61,11 @@ export default async function Home() {
         fallbackSlides={fallbackSlides}
         firstCategory={categories[0]}
       />
+
+      {/* ── STONE & JEWELLERY ─────────────────────── */}
+      {stoneCategory && jewelleryCategory && (
+        <StoneJewellerySection stone={stoneCategory} jewellery={jewelleryCategory} />
+      )}
 
       {/* ── COMING SOON ───────────────────────────── */}
       <ComingSoonHero imageUrl={comingSoonImage} discountText={settings?.firstOrderDiscountText} />

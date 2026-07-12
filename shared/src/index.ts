@@ -218,3 +218,16 @@ export interface Lead {
   cartItems?: LeadCartItem[]; // what was in their cart when they signed up, if anything
   createdAt: Date;
 }
+
+export interface CustomOrderRequest {
+  _id: string;
+  name: string;
+  phone: string;
+  email?: string;
+  occasion?: string;
+  budgetRange?: string;
+  preferredStone?: string;
+  referenceImageUrl?: string;
+  message?: string;
+  createdAt: Date;
+}
