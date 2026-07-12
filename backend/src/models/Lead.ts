@@ -3,6 +3,7 @@ import mongoose, { Schema, Document } from 'mongoose';
 export interface ILeadCartItem {
   productId: mongoose.Types.ObjectId;
   name: string;
+  slug: string;
   qty: number;
   price: number;
 }
@@ -19,6 +20,7 @@ const LeadCartItemSchema = new Schema<ILeadCartItem>(
   {
     productId: { type: Schema.Types.ObjectId, ref: 'Product', required: true },
     name: { type: String, required: true },
+    slug: { type: String, required: true },
     qty: { type: Number, required: true },
     price: { type: Number, required: true },
   },

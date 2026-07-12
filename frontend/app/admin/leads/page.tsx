@@ -1,11 +1,13 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import { adminApiListLeads } from '@/lib/admin-api';
 
 interface LeadCartItem {
   productId: string;
   name: string;
+  slug: string;
   qty: number;
   price: number;
 }
@@ -64,7 +66,14 @@ export default function AdminLeadsPage() {
                       <div className="space-y-0.5">
                         {l.cartItems.map((item) => (
                           <p key={item.productId}>
-                            {item.name} <span className="text-xs">× {item.qty}</span>
+                            <Link
+                              href={`/product/${item.slug}`}
+                              target="_blank"
+                              className="font-medium text-wine hover:underline"
+                            >
+                              {item.name}
+                            </Link>{' '}
+                            <span className="text-xs">× {item.qty}</span>
                           </p>
                         ))}
                       </div>

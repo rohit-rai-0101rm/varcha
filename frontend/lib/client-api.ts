@@ -198,7 +198,7 @@ export async function apiCreateLead(body: {
   name: string;
   phone: string;
   email?: string;
-  cartItems?: { productId: string; name: string; qty: number; price: number }[];
+  cartItems?: { productId: string; name: string; slug: string; qty: number; price: number }[];
 }) {
   const res = await fetch(`${API}/api/leads`, {
     method: 'POST',

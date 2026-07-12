@@ -10,8 +10,8 @@ export async function create(req: Request, res: Response) {
     }
     const cleanCartItems = Array.isArray(cartItems)
       ? cartItems
-          .filter((i) => i?.productId && i?.name && Number.isFinite(i?.qty) && Number.isFinite(i?.price))
-          .map((i) => ({ productId: i.productId, name: i.name, qty: i.qty, price: i.price }))
+          .filter((i) => i?.productId && i?.name && i?.slug && Number.isFinite(i?.qty) && Number.isFinite(i?.price))
+          .map((i) => ({ productId: i.productId, name: i.name, slug: i.slug, qty: i.qty, price: i.price }))
       : [];
     const lead = await leadService.createLead({
       name: name.trim(),

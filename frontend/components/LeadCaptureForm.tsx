@@ -32,7 +32,7 @@ export default function LeadCaptureForm({ discountText, className = '' }: Props)
         phone: phone.trim(),
         email: email.trim() || undefined,
         cartItems: items.length > 0
-          ? items.map((i) => ({ productId: i.productId, name: i.name, qty: i.qty, price: i.price }))
+          ? items.map((i) => ({ productId: i.productId, name: i.name, slug: i.slug, qty: i.qty, price: i.price }))
           : undefined,
       });
       setStatus('success');

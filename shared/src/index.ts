@@ -204,6 +204,7 @@ export interface Settings {
 export interface LeadCartItem {
   productId: string;
   name: string;
+  slug: string;
   qty: number;
   price: number; // snapshot at signup time
 }
