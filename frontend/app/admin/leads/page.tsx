@@ -7,7 +7,7 @@ import { adminApiListLeads } from '@/lib/admin-api';
 interface LeadCartItem {
   productId: string;
   name: string;
-  slug: string;
+  slug?: string;
   qty: number;
   price: number;
 }
@@ -66,13 +66,17 @@ export default function AdminLeadsPage() {
                       <div className="space-y-0.5">
                         {l.cartItems.map((item) => (
                           <p key={item.productId}>
-                            <Link
-                              href={`/product/${item.slug}`}
-                              target="_blank"
-                              className="font-medium text-wine hover:underline"
-                            >
-                              {item.name}
-                            </Link>{' '}
+                            {item.slug ? (
+                              <Link
+                                href={`/product/${item.slug}`}
+                                target="_blank"
+                                className="font-medium text-wine hover:underline"
+                              >
+                                {item.name}
+                              </Link>
+                            ) : (
+                              <span className="font-medium text-ink">{item.name}</span>
+                            )}{' '}
                             <span className="text-xs">× {item.qty}</span>
                           </p>
                         ))}
