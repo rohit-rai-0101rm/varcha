@@ -15,6 +15,7 @@ export interface IProduct extends Document {
   stockQty?: number;
   isActive: boolean;
   isFeatured: boolean;
+  postToSocial: boolean;
   createdAt: Date;
 }
 
@@ -44,6 +45,7 @@ const ProductSchema = new Schema<IProduct>(
     stockQty: Number,
     isActive: { type: Boolean, default: true },
     isFeatured: { type: Boolean, default: false },
+    postToSocial: { type: Boolean, default: false },
   },
   { timestamps: { createdAt: true, updatedAt: false } }
 );

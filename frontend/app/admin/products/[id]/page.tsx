@@ -48,6 +48,7 @@ export default function ProductFormPage({ params }: { params: Promise<{ id: stri
   const [description, setDescription] = useState('');
   const [isActive, setIsActive] = useState(true);
   const [isFeatured, setIsFeatured] = useState(false);
+  const [postToSocial, setPostToSocial] = useState(false);
   const [selectedStyles, setSelectedStyles] = useState<string[]>([]);
   const [selectedOccasions, setSelectedOccasions] = useState<string[]>([]);
   const [images, setImages] = useState<{ url: string; type: string }[]>([{ url: '', type: 'product-shot' }]);
@@ -69,6 +70,7 @@ export default function ProductFormPage({ params }: { params: Promise<{ id: stri
         setDescription(String(p.description ?? ''));
         setIsActive(Boolean(p.isActive));
         setIsFeatured(Boolean(p.isFeatured));
+        setPostToSocial(Boolean(p.postToSocial));
         setSelectedStyles((p.styleIds as Array<{ _id: string } | string> ?? []).map((s) => (typeof s === 'string' ? s : s._id)));
         setSelectedOccasions((p.occasion as string[] | undefined) ?? []);
         setImages((p.images as { url: string; type: string }[] | undefined)?.length ? p.images as { url: string; type: string }[] : [{ url: '', type: 'product-shot' }]);
@@ -96,6 +98,7 @@ export default function ProductFormPage({ params }: { params: Promise<{ id: stri
       description,
       isActive,
       isFeatured,
+      postToSocial,
       styleIds: selectedStyles,
       occasion: selectedOccasions,
       images: images.filter((i) => i.url.trim()),
@@ -322,6 +325,15 @@ export default function ProductFormPage({ params }: { params: Promise<{ id: stri
               Featured on homepage
               <span className="ml-1.5 font-annotation text-[10px] tracking-wide text-ink-soft">
                 shows in Featured Pieces strip · upload a model-shot image for best results
+              </span>
+            </span>
+          </label>
+          <label className="flex cursor-pointer items-center gap-2 font-body text-sm text-ink">
+            <input type="checkbox" checked={postToSocial} onChange={(e) => setPostToSocial(e.target.checked)} />
+            <span>
+              Post to Instagram &amp; Facebook
+              <span className="ml-1.5 font-annotation text-[10px] tracking-wide text-ink-soft">
+                auto-posts on save via the connected Make.com automation
               </span>
             </span>
           </label>

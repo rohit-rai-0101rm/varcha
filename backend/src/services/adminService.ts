@@ -9,6 +9,7 @@ import Order from '../models/Order';
 import Settings from '../models/Settings';
 import Lead from '../models/Lead';
 import CustomOrderRequest from '../models/CustomOrderRequest';
+import { postProductToSocial } from './socialPostService';
 
 function slugify(text: string): string {
   return (text ?? '').toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
@@ -53,7 +54,9 @@ export async function adminGetProduct(id: string) {
 
 export async function adminCreateProduct(data: any) {
   const slug = data.slug || slugify(data.name);
-  return Product.create({ ...data, slug });
+  const product = await Product.create({ ...data, slug });
+  if (product.postToSocial) postProductToSocial(product);
+  return product;
 }
 
 export async function adminUpdateProduct(id: string, data: any) {

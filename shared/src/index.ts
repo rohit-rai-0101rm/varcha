@@ -104,6 +104,7 @@ export interface Product {
   stockQty?: number; // only meaningful when channel = 'website-exclusive'
   isActive: boolean;
   isFeatured: boolean; // shows in Featured Pieces strip on homepage
+  postToSocial: boolean; // auto-post to Instagram/Facebook via Make.com webhook on create
   createdAt: Date;
 }
 
