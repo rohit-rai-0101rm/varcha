@@ -63,7 +63,7 @@ export default function StoneJewellerySection({ stone, jewellery }: Props) {
           <Panel cat={jewellery} tagline="Handcrafted · Everyday to Bridal" />
 
           {/* Medallion — solid gold ring, overlaps the seam on desktop */}
-          <div className="relative -my-6 flex justify-center lg:absolute lg:inset-0 lg:my-0 lg:items-center">
+          <div className="pointer-events-none relative -my-6 flex justify-center lg:absolute lg:inset-0 lg:my-0 lg:items-center">
             <RotatingMedallion size={150} className="lg:hidden" />
             <RotatingMedallion size={190} className="hidden lg:block" />
           </div>
