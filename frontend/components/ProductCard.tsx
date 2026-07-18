@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { apiLogEvent } from '@/lib/client-api';
@@ -11,6 +12,7 @@ interface Props {
 }
 
 export default function ProductCard({ product }: Props) {
+  const [loaded, setLoaded] = useState(false);
   const cover =
     product.images.find((i) => i.type === 'product-shot')?.url ?? product.images[0]?.url;
   const isExclusive = product.channel === 'website-exclusive';
@@ -26,12 +28,14 @@ export default function ProductCard({ product }: Props) {
       <div className="relative aspect-[4/5] overflow-hidden rounded-card bg-bg">
         {cover ? (
           <>
+            {!loaded && <div className="absolute inset-0 animate-pulse bg-line" />}
             <Image
               src={cover}
               alt={firstStyle ? `${product.name} — ${firstStyle.name} style` : product.name}
               fill
               sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-              className="object-cover transition-transform duration-500 group-hover:scale-105"
+              onLoad={() => setLoaded(true)}
+              className={`object-cover transition-transform transition-opacity duration-500 group-hover:scale-105 ${loaded ? 'opacity-100' : 'opacity-0'}`}
             />
             {/* Hover overlay */}
             <div className="absolute inset-0 flex items-end justify-center bg-ink/20 p-5 opacity-0 transition-opacity duration-300 group-hover:opacity-100">

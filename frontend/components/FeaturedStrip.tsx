@@ -7,6 +7,7 @@ import type { ApiProduct } from '@/lib/api';
 
 function OverlayCard({ product: p }: { product: ApiProduct }) {
   const [imgFailed, setImgFailed] = useState(false);
+  const [loaded, setLoaded] = useState(false);
   const img =
     p.images.find((i) => i.type === 'model-shot')?.url ??
     p.images.find((i) => i.type === 'product-shot')?.url;
@@ -18,14 +19,18 @@ function OverlayCard({ product: p }: { product: ApiProduct }) {
       className="group relative block aspect-[3/4] overflow-hidden rounded-card"
     >
       {useImg ? (
-        <Image
-          src={img!}
-          alt={p.styleIds[0] ? `${p.name} — ${p.styleIds[0].name} style` : p.name}
-          fill
-          sizes="(max-width: 640px) 72vw, (max-width: 1024px) 40vw, 25vw"
-          className="object-cover object-center transition-transform duration-700 ease-out group-hover:scale-[1.05]"
-          onError={() => setImgFailed(true)}
-        />
+        <>
+          {!loaded && <div className="absolute inset-0 animate-pulse bg-white/10" />}
+          <Image
+            src={img!}
+            alt={p.styleIds[0] ? `${p.name} — ${p.styleIds[0].name} style` : p.name}
+            fill
+            sizes="(max-width: 640px) 72vw, (max-width: 1024px) 40vw, 25vw"
+            onLoad={() => setLoaded(true)}
+            onError={() => setImgFailed(true)}
+            className={`object-cover object-center transition-transform transition-opacity duration-700 ease-out group-hover:scale-[1.05] ${loaded ? 'opacity-100' : 'opacity-0'}`}
+          />
+        </>
       ) : (
         <div
           className="h-full w-full"

@@ -7,6 +7,7 @@ import type { ApiCategory } from '@/lib/api';
 
 export default function CategoryCard({ cat }: { cat: ApiCategory }) {
   const [imgFailed, setImgFailed] = useState(false);
+  const [loaded, setLoaded] = useState(false);
   const useImage = !!cat.image && !imgFailed;
 
   return (
@@ -15,14 +16,18 @@ export default function CategoryCard({ cat }: { cat: ApiCategory }) {
       className="group relative block aspect-[3/4] w-full overflow-hidden rounded-card"
     >
       {useImage ? (
-        <Image
-          src={cat.image!}
-          alt={cat.name}
-          fill
-          sizes="(max-width: 640px) 50vw, (max-width: 1280px) 25vw, 320px"
-          className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.06]"
-          onError={() => setImgFailed(true)}
-        />
+        <>
+          {!loaded && <div className="absolute inset-0 animate-pulse bg-line" />}
+          <Image
+            src={cat.image!}
+            alt={cat.name}
+            fill
+            sizes="(max-width: 640px) 50vw, (max-width: 1280px) 25vw, 320px"
+            onLoad={() => setLoaded(true)}
+            onError={() => setImgFailed(true)}
+            className={`object-cover transition-transform transition-opacity duration-700 ease-out group-hover:scale-[1.06] ${loaded ? 'opacity-100' : 'opacity-0'}`}
+          />
+        </>
       ) : (
         <div
           className="h-full w-full"
