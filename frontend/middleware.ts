@@ -1,7 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+// Flip to false + push to reopen the site. Hardcoded (not env-driven) so a
+// single push closes/reopens it everywhere it's deployed, no per-host env config needed.
+const SITE_CLOSED = true;
+
 export function middleware(request: NextRequest) {
-  if (process.env.SITE_CLOSED === 'true' && request.nextUrl.pathname !== '/site-closed') {
+  if (SITE_CLOSED && request.nextUrl.pathname !== '/site-closed') {
     const url = request.nextUrl.clone();
     url.pathname = '/site-closed';
     return NextResponse.rewrite(url);
