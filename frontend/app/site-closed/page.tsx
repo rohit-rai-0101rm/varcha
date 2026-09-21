@@ -27,7 +27,7 @@ export default function SiteClosedPage() {
         </p>
         <p className="font-annotation mt-4 text-sm leading-relaxed text-neutral-300">
           This site has been taken offline due to an outstanding unpaid invoice
-          for development services rendered.
+          for development services.
         </p>
         <p className="typewriter font-annotation mt-3 text-xs uppercase tracking-widest text-neutral-500">
           Status: Unpaid
@@ -233,7 +233,7 @@ export default function SiteClosedPage() {
             width: 0;
           }
           to {
-            width: 14ch;
+            width: 18ch;
           }
         }
         @keyframes caret-blink {
@@ -265,7 +265,7 @@ export default function SiteClosedPage() {
             transform: rotate(-6deg) scale(1);
           }
           .typewriter {
-            width: 14ch;
+            width: 18ch;
             border-right-color: transparent;
           }
         }
