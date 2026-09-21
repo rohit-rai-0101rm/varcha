@@ -1,6 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 export function middleware(request: NextRequest) {
+  if (process.env.SITE_CLOSED === 'true' && request.nextUrl.pathname !== '/site-closed') {
+    const url = request.nextUrl.clone();
+    url.pathname = '/site-closed';
+    return NextResponse.rewrite(url);
+  }
+
   const response = NextResponse.next();
 
   if (!request.cookies.get('varcha_session')) {
